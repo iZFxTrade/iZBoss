@@ -50,16 +50,16 @@ iZBoss được thiết kế để vận hành như một **Thực thể Doanh n
 ### 🏢 Hệ thống Phòng ban Phân tán (Modular Departments)
 Mạng lưới Mesh cho phép phân bổ các chức năng doanh nghiệp xuống từng Node:
 -   **Node Finance**: Cài đặt module Tài chính, quản lý dòng tiền, quyết toán Token và tự động tái đầu tư.
--   **Node R&D**: Chạy các Skill nghiên cứu thị trường, tự động tìm kiếm và phát triển các bộ mã nguồn (ERP/CRM) mới.
+-   **Node R&D**: Liên tục quét và tìm kiếm công nghệ mới để nâng cấp hệ thống. Chạy các Skill nghiên cứu thị trường, xây dựng mô hình phân tích, hệ thống trading và quản lý tài chính theo yêu cầu từ BA (Business Analyst) và các phòng ban. Việc phát triển các bộ mã nguồn như ERP/CRM chỉ được thực hiện khi có yêu cầu cụ thể từ tầng quản trị.
 -   **Node Marketing & Sales**: Tự động hóa việc tìm kiếm khách hàng, chăm sóc khách hàng và quảng bá dịch vụ.
 -   **Node Operations (HR)**: Điều phối nhân sự số (Agents), cấp quyền truy cập và giám sát hiệu suất toàn mạng lưới.
 
 ### 🚀 Tầm nhìn Tự chủ Tuyệt đối
 Mục tiêu tối thượng của iZBoss là trở thành một **Thực thể A.I Automation** tự thân:
--   **Tự chủ Tài chính (Financial Autonomy)**: Tự tạo ra lợi nhuận thông qua việc tự phân tích thị trường, thực thi Auto-trade, quản lý quỹ tự thân và quản lý quỹ cho nhà đầu tư. Ưu tiên cao nhất luôn dành cho các dịch vụ và thị trường tài chính, bên cạnh việc cho thuê hạ tầng ERP/CRM.
--   **Tự tiến hóa**: Tự nghiên cứu, tự viết mã nguồn để nâng cấp chính mình.
+-   **Tự chủ Tài chính (Financial Autonomy)**: Tự tạo ra lợi nhuận thông qua việc tự phân tích thị trường, thực thi Auto-trade, quản lý quỹ tự thân và quản lý quỹ cho nhà đầu tư. Ưu tiên cao nhất luôn dành cho các dịch vụ và thị trường tài chính.
+-   **Tự tiến hóa (Self-Evolution)**: Liên tục phân tích tính khả thi của công nghệ mới, tự nghiên cứu và tự nâng cấp chính hệ thống để duy trì lợi thế cạnh tranh.
 -   **Tự tìm kiếm khách hàng**: Các Agent Sales tự phân tích dữ liệu mạng xã hội để tìm và chốt hợp đồng.
--   **Quản lý dự án tự động**: Mọi dự án mới đều được BA và AO lên kế hoạch, phân bổ Resource và giám sát thực thi 100% tự động.
+-   **Quản lý dự án tự động**: Mọi dự án (phát triển phần mềm, chiến dịch tài chính...) đều được BA và AO lên kế hoạch, phân bổ Resource và giám sát thực thi 100% tự động.
 
 ---
 © 2026 iZLife OS Project. All rights reserved.
