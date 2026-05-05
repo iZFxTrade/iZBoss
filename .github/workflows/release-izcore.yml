@@ -2,6 +2,8 @@ name: 🚀 iZcore Release Builder
 
 on:
   push:
+    branches:
+      - main
     tags:
       - 'v*'
   workflow_dispatch:
@@ -111,16 +113,18 @@ jobs:
   # ──────────────────────────────────────────────────────────
   build-macos:
     name: Build macOS (${{ matrix.arch }})
-    runs-on: macos-latest
+    runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
       matrix:
         include:
           - arch: aarch64
+            os: macos-14
             target: aarch64-apple-darwin
             artifact: izcore-macos-aarch64
 
           - arch: x86_64
+            os: macos-13
             target: x86_64-apple-darwin
             artifact: izcore-macos-x86_64
 
