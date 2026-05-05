@@ -202,9 +202,17 @@ jobs:
 
             **iZ.Life BOSS Autonomous Entity** — Cài đặt trên mọi thiết bị với một lệnh duy nhất.
 
-            ## ⚡ Cài đặt nhanh (Linux/macOS)
+            ## ⚡ Quick Install (Every Device)
+            You can install iZcore on any device (Linux, macOS, Android, Embedded) using one of these commands:
+
+            **Option 1: Via System Domain (Recommended)**
             ```bash
             curl -fsSL https://boss.iz.life/install | sh
+            ```
+
+            **Option 2: Direct from GitHub (Fallback/Absolute Trust)**
+            ```bash
+            curl -fsSL https://raw.githubusercontent.com/iZFxTrade/izboss/main/dna_izcore/install.sh | sh
             ```
 
             ## 📦 Tải thủ công theo nền tảng
