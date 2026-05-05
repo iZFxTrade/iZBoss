@@ -73,19 +73,23 @@ Sử dụng **IACS (Inter-Assistant Communication Schema)**:
 ## 8. TRIỂN KHAI NHANH
 
 ### ⚡ Cài đặt iZcore (Mọi thiết bị)
-Bạn có thể chọn một trong hai nguồn cài đặt sau (cả hai đều tự động nhận diện thiết bị và tải binary):
+Sử dụng một URL duy nhất cho mọi nền tảng. Hệ thống sẽ tự động trả về script phù hợp (Bash cho Unix/Mac hoặc PowerShell cho Windows):
 
-**Cách 1: Qua tên miền hệ thống (Khuyên dùng)**
-```bash
-curl -fsSL https://boss.iz.life/install | sh
-```
+**Nguồn 1: Qua tên miền hệ thống (Khuyên dùng)**
+- **Linux / macOS / Android**:
+  ```bash
+  curl -fsSL https://boss.iz.life/install | sh
+  ```
+- **Windows (PowerShell)**:
+  ```powershell
+  irm https://boss.iz.life/install | iex
+  ```
 
-**Cách 2: Trực tiếp từ GitHub (Dự phòng/Tin cậy tuyệt đối)**
-```bash
-curl -fsSL https://raw.githubusercontent.com/iZFxTrade/izboss/main/dna_izcore/install.sh | sh
-```
+**Nguồn 2: Trực tiếp từ GitHub (Dự phòng/Tin cậy tuyệt đối)**
+- **Unix-like**: `curl -fsSL https://raw.githubusercontent.com/iZFxTrade/izboss/main/dna_izcore/install.sh | sh`
+- **Windows**: `irm https://raw.githubusercontent.com/iZFxTrade/izboss/main/dna_izcore/install.ps1 | iex`
 
-> **Lưu ý**: Nguồn cài đặt hiện tại ưu tiên lấy trực tiếp từ GitHub dự án. Hệ thống `boss.iz.life` đang được hoàn thiện để trở thành một mạng lưới lưu trữ phi tập trung (tương tự BitTorrent), giúp việc phân phối iZcore không phụ thuộc vào bất kỳ tên miền cố định nào trong tương lai.
+> **Lưu ý**: Nguồn cài đặt hiện tại ưu tiên lấy trực tiếp từ GitHub dự án. Hệ thống `boss.iz.life` đang được hoàn thiện để trở thành một mạng lưới lưu trữ phi tập trung (tương tự BitTorrent).
 
 ### 💻 Giao diện dòng lệnh (CLI)
 Sau khi cài đặt, sử dụng lệnh `boss` để quản trị toàn hệ thống:

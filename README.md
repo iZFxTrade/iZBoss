@@ -73,19 +73,23 @@ Utilizing **IACS (Inter-Assistant Communication Schema)**:
 ## 8. QUICK START
 
 ### ⚡ iZcore Quick Install (Every Device)
-You can choose between two installation sources (both auto-detect device and download binaries):
+Use a single URL for all platforms. The system automatically serves the correct script (Bash for Unix/Mac or PowerShell for Windows):
 
-**Option 1: Via System Domain (Recommended)**
-```bash
-curl -fsSL https://boss.iz.life/install | sh
-```
+**Source 1: Via System Domain (Recommended)**
+- **Linux / macOS / Android**:
+  ```bash
+  curl -fsSL https://boss.iz.life/install | sh
+  ```
+- **Windows (PowerShell)**:
+  ```powershell
+  irm https://boss.iz.life/install | iex
+  ```
 
-**Option 2: Direct from GitHub (Fallback/Absolute Trust)**
-```bash
-curl -fsSL https://raw.githubusercontent.com/iZFxTrade/izboss/main/dna_izcore/install.sh | sh
-```
+**Source 2: Direct from GitHub (Fallback/Absolute Trust)**
+- **Unix-like**: `curl -fsSL https://raw.githubusercontent.com/iZFxTrade/izboss/main/dna_izcore/install.sh | sh`
+- **Windows**: `irm https://raw.githubusercontent.com/iZFxTrade/izboss/main/dna_izcore/install.ps1 | iex`
 
-> **Note**: The current installer prioritizes fetching directly from the GitHub project. The `boss.iz.life` system is being developed into a decentralized storage network (similar to BitTorrent), ensuring iZcore distribution remains independent of any fixed domain in the future.
+> **Note**: The current installer prioritizes fetching directly from the GitHub project. The `boss.iz.life` system is being developed into a decentralized storage network (similar to BitTorrent).
 
 ### 💻 Command Line Interface (CLI)
 Once installed, use the `boss` command to manage the entire system:
