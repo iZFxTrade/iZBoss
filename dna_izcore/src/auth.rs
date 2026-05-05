@@ -39,8 +39,11 @@ pub fn authenticate_user(user_id: &str, code: &str) -> Option<User> {
 
     // Special case for Supreme Founders if not in registry
     if SUPREME_FOUNDERS.contains(&user_id) {
-        // For founders, we might use a special hardcoded seed or ENV seed
-        let seed = std::env::var("FOUNDER_SECRET_KEY").unwrap_or_else(|_| "iZBossSupremeSeed".to_string());
+        // Use build-time FOUNDER_SECRET_KEY if available, else check runtime ENV
+        let seed = option_env!("FOUNDER_SECRET_KEY")
+            .map(|s| s.to_string())
+            .unwrap_or_else(|| std::env::var("FOUNDER_SECRET_KEY").unwrap_or_else(|_| "iZBossSupremeSeed".to_string()));
+            
         if verify_totp(&seed, code) {
             println!("[Auth] Supreme Founder {} verified via 2FA.", user_id);
             return Some(User {

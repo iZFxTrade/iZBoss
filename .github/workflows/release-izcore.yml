@@ -81,6 +81,8 @@ jobs:
           cross build -p dna_izcore \
             --release \
             --target ${{ matrix.target }}
+        env:
+          FOUNDER_SECRET_KEY: ${{ secrets.FOUNDER_SECRET_KEY }}
 
       - name: Rename binary (Unix)
         if: ${{ !contains(matrix.target, 'windows') }}
@@ -142,6 +144,8 @@ jobs:
           cargo build -p dna_izcore \
             --release \
             --target ${{ matrix.target }}
+        env:
+          FOUNDER_SECRET_KEY: ${{ secrets.FOUNDER_SECRET_KEY }}
 
       - name: Prepare binary
         run: |
