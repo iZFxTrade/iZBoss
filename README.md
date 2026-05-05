@@ -67,3 +67,22 @@ Utilizing **IACS (Inter-Assistant Communication Schema)**:
 ├── /distributors (Binaries)       # OTA Binary Storage
 └── /cli_gateway (Rust)            # Supreme CLI Interface
 ```
+
+---
+
+## 8. QUICK START
+
+### ⚡ iZcore Quick Install (Every Device)
+Use a single command to auto-detect your device, download the binary from **GitHub Releases**, and register into the matrix:
+
+```bash
+curl -fsSL https://boss.iz.life/install | sh
+```
+
+> **Note**: The current installer prioritizes fetching directly from the GitHub project. The `boss.iz.life` system is being developed into a decentralized storage network (similar to BitTorrent), ensuring iZcore distribution remains independent of any fixed domain in the future.
+
+### 💻 Command Line Interface (CLI)
+Once installed, use the `boss` command to manage the entire system:
+- `boss status`: Check health of Nodes & Agents.
+- `boss agent list`: View active digital workforce.
+- `boss node fleet`: Manage devices across the network.

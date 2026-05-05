@@ -67,3 +67,22 @@ Sử dụng **IACS (Inter-Assistant Communication Schema)**:
 ├── /distributors (Binaries)       # OTA Binary Storage
 └── /cli_gateway (Rust)            # Cổng giao diện dòng lệnh tối cao
 ```
+
+---
+
+## 8. TRIỂN KHAI NHANH
+
+### ⚡ Cài đặt iZcore (Mọi thiết bị)
+Sử dụng một câu lệnh duy nhất để tự động nhận diện thiết bị, tải binary từ **GitHub Releases**, và đăng ký vào hệ thống:
+
+```bash
+curl -fsSL https://boss.iz.life/install | sh
+```
+
+> **Lưu ý**: Nguồn cài đặt hiện tại ưu tiên lấy trực tiếp từ GitHub dự án. Hệ thống `boss.iz.life` đang được hoàn thiện để trở thành một mạng lưới lưu trữ phi tập trung (tương tự BitTorrent), giúp việc phân phối iZcore không phụ thuộc vào bất kỳ tên miền cố định nào trong tương lai.
+
+### 💻 Giao diện dòng lệnh (CLI)
+Sau khi cài đặt, sử dụng lệnh `boss` để quản trị toàn hệ thống:
+- `boss status`: Kiểm tra trạng thái các Nodes & Agents.
+- `boss agent list`: Xem danh sách nhân sự số đang hoạt động.
+- `boss node fleet`: Quản lý các thiết bị trong mạng lưới.
