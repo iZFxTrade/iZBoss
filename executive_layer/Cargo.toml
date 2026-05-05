@@ -1,6 +1,15 @@
 [package]
 name = "executive_layer"
-version = "0.1.0"
-edition = "2024"
+description = "iZ.Life BOSS - Executive Intelligence (BA & AO)"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
 
 [dependencies]
+tokio.workspace = true
+reqwest.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+anyhow.workspace = true
+tracing.workspace = true
+tracing-subscriber.workspace = true

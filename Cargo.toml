@@ -1,0 +1,27 @@
+[workspace]
+resolver = "2"
+members = [
+    "dna_izcore",
+    "executive_layer",
+    "cli_gateway",
+    "departments/finance",
+    "departments/trading",
+    "departments/rd",
+    "departments/marketing",
+    "departments/sales_cs",
+]
+
+[workspace.package]
+version = "0.1.0"
+edition = "2021"
+authors = ["iZFxTrade <admin@iz.life>"]
+description = "iZ.Life BOSS — Autonomous Business Operating System"
+
+[workspace.dependencies]
+tokio = { version = "1.36", features = ["full"] }
+reqwest = { version = "0.11", features = ["json", "rustls-tls"], default-features = false }
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+anyhow = "1.0"
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter"] }
