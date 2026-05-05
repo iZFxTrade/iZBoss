@@ -8,9 +8,19 @@
 set -e
 
 BOSS_API="https://boss.iz.life"
+GITHUB_REPO="iZFxTrade/izboss"
 INSTALL_DIR="/usr/local/bin"
 SERVICE_NAME="izcore"
-VERSION="latest"
+
+# ── Step 0: Get Latest Version from GitHub ───────────────────
+log "Đang kiểm tra phiên bản mới nhất từ GitHub..."
+LATEST_TAG=$(curl -s https://api.github.com/repos/${GITHUB_REPO}/releases/latest | grep '"tag_name":' | sed -E 's/.*"([^"]+)".*/\1/')
+
+if [ -z "$LATEST_TAG" ]; then
+    warn "Không lấy được version từ GitHub — sử dụng v0.1.1 làm mặc định."
+    LATEST_TAG="v0.1.1"
+fi
+VERSION="$LATEST_TAG"
 
 # ── Colors ──────────────────────────────────────────────────
 RED='\033[0;31m'; GREEN='\033[0;32m'; YELLOW='\033[1;33m'
@@ -74,13 +84,20 @@ done
 ok "Dependencies OK"
 
 # ── Step 4: Download binary ──────────────────────────────────
-DOWNLOAD_URL="${BOSS_API}/api/ota/download?platform=${PLATFORM}&version=${VERSION}"
+DOWNLOAD_URL="https://github.com/${GITHUB_REPO}/releases/download/${VERSION}/izcore-${PLATFORM}"
+FALLBACK_URL="${BOSS_API}/api/ota/download?platform=${PLATFORM}&version=${VERSION}"
 BINARY_PATH="/tmp/izcore_${PLATFORM}"
 
 log "Đang tải binary cho ${PLATFORM}..."
-log "URL: ${DOWNLOAD_URL}"
+log "GitHub: ${DOWNLOAD_URL}"
 
 HTTP_STATUS=$(curl -fsSL -w "%{http_code}" -o "$BINARY_PATH" "$DOWNLOAD_URL" 2>/dev/null || echo "000")
+
+if [ "$HTTP_STATUS" != "200" ]; then
+    warn "Không tải được từ GitHub (HTTP $HTTP_STATUS) — Đang thử fallback về boss.iz.life..."
+    log "Fallback: ${FALLBACK_URL}"
+    HTTP_STATUS=$(curl -fsSL -w "%{http_code}" -o "$BINARY_PATH" "$FALLBACK_URL" 2>/dev/null || echo "000")
+fi
 
 if [ "$HTTP_STATUS" = "200" ] && [ -s "$BINARY_PATH" ]; then
     ok "Đã tải binary thành công ($(du -sh "$BINARY_PATH" | cut -f1))"

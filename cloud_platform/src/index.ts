@@ -61,45 +61,76 @@ export default {
 // ────────────────────────────────────────────────────────────
 // /install — Serve universal iZcore installer script
 // ────────────────────────────────────────────────────────────
+// ────────────────────────────────────────────────────────────
+// /install — Serve universal iZcore installer script
+// ────────────────────────────────────────────────────────────
 function handleInstallScript(): Response {
     const script = `#!/bin/sh
-# iZ.Life BOSS — iZcore Universal Installer
+# iZ.Life BOSS — iZcore Universal Installer (GitHub Source)
 # Usage: curl -fsSL https://boss.iz.life/install | sh
+
 set -e
 BOSS_API="https://boss.iz.life"
+GITHUB_REPO="iZFxTrade/izboss"
+
 RED='\\033[0;31m'; GREEN='\\033[0;32m'; YELLOW='\\033[1;33m'
 CYAN='\\033[0;36m'; BOLD='\\033[1m'; NC='\\033[0m'
+
 log()  { printf "\${CYAN}[iZcore]\${NC} %s\\n" "$1"; }
 ok()   { printf "\${GREEN}[✓]\${NC} %s\\n" "$1"; }
+warn() { printf "\${YELLOW}[!]\${NC} %s\\n" "$1"; }
 die()  { printf "\${RED}[✗]\${NC} %s\\n" "$1"; exit 1; }
+
 printf "\\n\${BOLD}\${CYAN}"
 printf "╔══════════════════════════════════════════════╗\\n"
 printf "║       iZ.Life BOSS — iZcore Installer        ║\\n"
+printf "║         (Primary Source: GitHub)             ║\\n"
 printf "╚══════════════════════════════════════════════╝\\n"
 printf "\${NC}\\n"
+
+log "Đang kiểm tra phiên bản mới nhất từ GitHub..."
+VERSION=$(curl -s https://api.github.com/repos/\${GITHUB_REPO}/releases/latest | grep '"tag_name":' | sed -E 's/.*"([^"]+)".*/\\1/')
+[ -z "\${VERSION}" ] && VERSION="v0.1.1"
+
 OS=$(uname -s | tr '[:upper:]' '[:lower:]')
 ARCH=$(uname -m)
 case "$ARCH" in x86_64) ARCH_SLUG="x86_64" ;; aarch64|arm64) ARCH_SLUG="aarch64" ;; armv7l) ARCH_SLUG="armv7" ;; *) die "Unsupported arch: $ARCH" ;; esac
 case "$OS" in linux) OS_SLUG="linux" ;; darwin) OS_SLUG="macos" ;; *) die "Unsupported OS: $OS" ;; esac
 PLATFORM="\${OS_SLUG}-\${ARCH_SLUG}"
-ok "Device: \${BOLD}\${OS_SLUG}\${NC} / \${BOLD}\${ARCH_SLUG}\${NC}"
-MAC=$(ip link 2>/dev/null | grep "link/ether" | head -1 | awk '{print $2}' || ifconfig 2>/dev/null | grep "ether" | head -1 | awk '{print $2}' || echo "00:00:00:00:00:00")
-DEVICE_ID="iznode-$(printf "%s_%s" "$MAC" "$(hostname)" | sha256sum 2>/dev/null | cut -c1-16 || date +%s)"
-ok "Device ID: \${BOLD}\${DEVICE_ID}\${NC}"
-BINARY_URL="\${BOSS_API}/api/ota/download?platform=\${PLATFORM}"
-log "Downloading binary for \${PLATFORM}..."
-if curl -fsSL -o /tmp/izcore "\${BINARY_URL}" 2>/dev/null && [ -s /tmp/izcore ]; then
+
+ok "Thiết bị: \${BOLD}\${OS_SLUG}\${NC} / \${BOLD}\${ARCH_SLUG}\${NC} (\${VERSION})"
+
+BINARY_URL="https://github.com/\${GITHUB_REPO}/releases/download/\${VERSION}/izcore-\${PLATFORM}"
+FALLBACK_URL="\${BOSS_API}/api/ota/download?platform=\${PLATFORM}&version=\${VERSION}"
+
+log "Đang tải binary từ GitHub..."
+HTTP_STATUS=$(curl -fsSL -w "%{http_code}" -o /tmp/izcore "\${BINARY_URL}" 2>/dev/null || echo "000")
+
+if [ "\$HTTP_STATUS" != "200" ]; then
+  warn "GitHub không khả dụng — Thử fallback về boss.iz.life..."
+  HTTP_STATUS=$(curl -fsSL -w "%{http_code}" -o /tmp/izcore "\${FALLBACK_URL}" 2>/dev/null || echo "000")
+fi
+
+if [ "\$HTTP_STATUS" = "200" ] && [ -s /tmp/izcore ]; then
   chmod +x /tmp/izcore
   sudo mv /tmp/izcore /usr/local/bin/izcore 2>/dev/null || mv /tmp/izcore "\$HOME/bin/izcore"
-  ok "iZcore installed!"
+  ok "iZcore đã được cài đặt thành công!"
 else
-  die "Binary not available for \${PLATFORM} yet. Check back soon or build from source."
+  die "Không thể tải binary. Vui lòng kiểm tra kết nối mạng."
 fi
+
+log "Đang đăng ký node..."
+MAC=$(ip link 2>/dev/null | grep "link/ether" | head -1 | awk '{print $2}' || ifconfig 2>/dev/null | grep "ether" | head -1 | awk '{print $2}' || echo "00:00:00:00:00:00")
+DEVICE_ID="iznode-$(printf "%s_%s" "\$MAC" "$(hostname)" | sha256sum 2>/dev/null | cut -c1-16 || date +%s)"
+
 curl -s -X POST "\${BOSS_API}/api/register" -H "Content-Type: application/json" \\
-  -d "{\\"device_id\\":\\"\${DEVICE_ID}\\",\\"platform\\":\\"\${PLATFORM}\\",\\"hostname\\":\\"$(hostname)\\"}" >/dev/null 2>&1 && ok "Registered with Command Center!" || true
+  -d "{\\"device_id\\":\\"\${DEVICE_ID}\\",\\"platform\\":\\"\${PLATFORM}\\",\\"hostname\\":\\"$(hostname)\\",\\"version\\":\\"\${VERSION}\\"}" >/dev/null 2>&1 && ok "Đã báo danh thành công!"
+
+log "Khởi chạy iZcore..."
 izcore &
-ok "iZcore is running in background!"
-printf "\\n  \${BOLD}Run:\${NC} izcore --status\\n\\n"`;
+ok "iZcore đang chạy ngầm. Hệ thống BitTorrent-like P2P sẽ tự động được kích hoạt khi node ổn định."
+
+printf "\\n  \${BOLD}Kiểm tra:\${NC} izcore --status\\n\\n"`;
 
     return new Response(script, {
         headers: {
