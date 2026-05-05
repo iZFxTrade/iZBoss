@@ -99,4 +99,14 @@ Community Skill Marketplace: Sharing verified modules across the network.
 
 Hardware Security: YubiKey support for Founder-level actions.
 
+7. Immortal Discovery & Sovereignty
+
+The iZCore kernel is designed for survival in hostile or fragmented network environments. It implements a multi-stage discovery protocol that eliminates single points of failure:
+
+Peer Caching: Every successfully established P2P connection is stored in peer_cache.json. Upon reboot, the node attempts to reconnect to these known peers before querying external trackers.
+
+Direct IP Seeding: The binary contains hardcoded IP addresses of iZBoss Seed Nodes. This bypasses DNS-level censorship or domain seizure.
+
+Autonomous Mesh: Once a single connection is made, the Kademlia DHT takes over, allowing the node to explore the entire global mesh without ever contacting boss.iz.life.
+
 © 2026 iZLife OS Project. All rights reserved.

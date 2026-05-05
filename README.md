@@ -13,9 +13,15 @@ izcore agent on
 ```
 This feature automatically analyzes hardware resources and installs the most suitable language model (e.g., Phi-3 or Llama-3), turning your device into a communicative autonomous entity. When the network grows strong enough, a global **AO (Autonomous Operator)** will be activated as the ultimate network assistant.
 
+## 🛡️ Immortal Mesh Network
+iZ.Life BOSS is built for eternity. Even if the `boss.iz.life` domain disappears, the network continues to operate autonomously through:
+-   **Direct IP Seeding**: Hardcoded seed node IP addresses in the binary.
+-   **Peer Caching**: Nodes remember previously connected peers locally.
+-   **Local mDNS**: Automatic local peer discovery without internet.
+
 ---
 
-## 1. THE DNA LAYER: iZCore (The Kernel - Decentralized)
+## 1. THE DNA LAYER: iZCore (The Immortal Kernel)
 The ultra-lightweight core written in **Rust**, acting as the "genetic code" embedded in every device.
 - **Hardware Fingerprinting**: Hashing algorithms for device identification based on CPU ID, MAC Address, and Disk Serial.
 - **Self-Bootstrap**: Minimalist scripts connecting to `boss.iz.life` to determine environment and download installation packages.

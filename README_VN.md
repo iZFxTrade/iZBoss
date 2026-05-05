@@ -13,9 +13,15 @@ izcore agent on
 ```
 Tính năng này sẽ tự động phân tích phần cứng và cài đặt mô hình ngôn ngữ (như Phi-3 hoặc Llama-3) để biến thiết bị của bạn thành một thực thể có khả năng giao tiếp và tự vận hành. Khi mạng lưới đủ mạnh, một **AO (Autonomous Operator)** toàn cầu sẽ được kích hoạt để làm trợ lý cho toàn bộ mạng lưới.
 
+## 🛡️ Mạng Lưới Bất Tử (Immortal Mesh Network)
+iZ.Life BOSS được thiết kế để tồn tại vĩnh cửu. Ngay cả khi tên miền `boss.iz.life` biến mất, mạng lưới vẫn tự vận hành nhờ:
+-   **Direct IP Seeding**: Các Node hạt giống được nhúng trực tiếp bằng địa chỉ IP trong mã nguồn.
+-   **Peer Caching**: Mỗi Node tự ghi nhớ danh sách bạn bè đã từng kết nối.
+-   **Local mDNS**: Tự nhận diện anh em trong mạng LAN không cần internet.
+
 ---
 
-## 1. TẦNG DNA: iZCore (The Kernel - Phi tập trung)
+## 1. TẦNG DNA: iZCore (The Kernel - Bất tử)
 Lõi mã nguồn siêu nhẹ viết bằng **Rust**, đóng vai trò là "mã gen" nằm trong mọi thiết bị.
 - **Hardware Fingerprinting**: Thuật toán băm (Hashing) định danh thiết bị dựa trên CPU ID, MAC Address, Disk Serial.
 - **Self-Bootstrap**: Script tối giản kết nối về `boss.iz.life` để xác định môi trường và tải bộ cài.

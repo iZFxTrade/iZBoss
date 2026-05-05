@@ -134,10 +134,10 @@ fn ui(f: &mut ratatui::Frame, app: &App) {
 }
 
 fn draw_fleet_tab(f: &mut ratatui::Frame, area: Rect) {
+    let peer_count = crate::p2p::ACTIVE_PEERS.load(std::sync::atomic::Ordering::SeqCst);
     let rows = vec![
-        Row::new(vec!["iznode-82fa1", "FPT PlayBox", "online", "linux-armv7", "Active"]),
-        Row::new(vec!["iznode-c9012", "MacBook M1", "online", "macos-aarch64", "Idle"]),
-        Row::new(vec!["iznode-f1234", "Win-Workstation", "offline", "windows-x86_64", "Inactive"]),
+        Row::new(vec!["iznode-local", "This Device", "online", "local", "Stable"]),
+        Row::new(vec!["mesh-peer", "Other Node", "online", "p2p", "Active"]),
     ];
     let table = Table::new(rows, [
         Constraint::Length(15),
@@ -146,8 +146,8 @@ fn draw_fleet_tab(f: &mut ratatui::Frame, area: Rect) {
         Constraint::Length(15),
         Constraint::Length(10),
     ])
-    .header(Row::new(vec!["Node ID", "Name", "Status", "Platform", "Load"]).style(Style::default().fg(Color::Yellow).add_modifier(Modifier::BOLD)))
-    .block(Block::default().borders(Borders::ALL).title(" Infrastructure Fleet "));
+    .header(Row::new(vec!["Node ID", "Name", "Status", "Source", "Load"]).style(Style::default().fg(Color::Yellow).add_modifier(Modifier::BOLD)))
+    .block(Block::default().borders(Borders::ALL).title(format!(" Infrastructure Fleet (Active Peers: {}) ", peer_count)));
     f.render_widget(table, area);
 }
 
