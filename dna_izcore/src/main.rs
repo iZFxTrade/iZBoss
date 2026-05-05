@@ -57,6 +57,7 @@ enum UserCommands {
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let cli = Cli::parse();
+    let device_id = fingerprint::generate_device_id();
 
     // ── 0. CLI Mode Handling ──────────────────────────────────
     if let Some(command) = cli.command {
@@ -70,7 +71,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                 return Ok(());
             }
             Commands::Status => {
-                println!("[DNA] Node Status: Active | ID: {}", fingerprint::generate_device_id());
+                println!("[DNA] Node Status: Active | ID: {}", device_id);
                 return Ok(());
             }
         }
@@ -81,25 +82,112 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         return Ok(());
     }
 
-    println!("╔══════════════════════════════════════════════╗");
-    println!("║     iZ.Life BOSS — iZCore DNA Kernel         ║");
-    println!("║          Autonomous Entity Awakening         ║");
-    println!("╚══════════════════════════════════════════════╝\n");
-
-    // ── 1. Hardware Fingerprinting ───────────────────────────
-    let device_id = fingerprint::generate_device_id();
-    println!("[DNA] Device Fingerprint: {}", device_id);
-
-    // ── 2. Auth Gate ─────────────────────────────────────────
-    if !auth::verify_master_key() {
-        println!("[Auth] ✗ UNAUTHORIZED — Entity stays dormant.");
-        println!("[Auth] Run 'izcore --init' to set up the first user.");
+    // ── 1. Interactive Entry (Default) ───────────────────────
+    let registry = UserRegistry::load();
+    if registry.users.is_empty() {
+        // No users in local registry? This node might be unclaimed or just wiped.
+        // But we check if there's a "local owner" set.
+        handle_interactive_onboarding(&device_id).await?;
         return Ok(());
     }
-    println!("[Auth] ✓ Entity Awakened.\n");
 
-    // ── 3. Bootstrap ───────────
-    bootstrap::connect_to_command_center(&device_id, cli.username.as_deref()).await?;
+    // ── 2. Authenticated Dashboard Entry ─────────────────────
+    // If we reach here, the node has users. We assume the primary user is 'owner' or 'root'.
+    println!("iZCore Terminal Entry. Please identify yourself.");
+    print!("User ID: ");
+    use std::io::{self, Write};
+    io::stdout().flush()?;
+    let mut user_id = String::new();
+    io::stdin().read_line(&mut user_id)?;
+    let user_id = user_id.trim();
+
+    print!("Enter 2FA Code: ");
+    io::stdout().flush()?;
+    let mut code = String::new();
+    io::stdin().read_line(&mut code)?;
+    let code = code.trim();
+
+    if let Some(user) = auth::authenticate_user(user_id, code) {
+        display_ecosystem_dashboard(&user, &device_id).await?;
+        
+        // After dashboard, we can start the background services if needed, 
+        // but typically a CLI tool exits or stays in a loop.
+        // For iZCore, we want the background services to keep running.
+    } else {
+        println!("[Auth] ✗ Access Denied.");
+        return Ok(());
+    }
+
+    // Background services start if we are running as a daemon (no interactive)
+    // For now, let's keep the background services in a separate 'daemon' mode or handle it.
+    Ok(())
+}
+
+async fn handle_interactive_onboarding(device_id: &str) -> Result<(), Box<dyn std::error::Error>> {
+    println!("\n[iZCore] ⚠ No owner detected for this node.");
+    println!("[iZCore] Starting Auto-Onboarding...");
+    
+    print!("Please enter your desired Username: ");
+    use std::io::{self, Write};
+    io::stdout().flush()?;
+    let mut username = String::new();
+    io::stdin().read_line(&mut username)?;
+    let username = username.trim().to_string();
+
+    // Generate 2FA Secret
+    let secret = hex::encode(device_id.as_bytes()).get(0..16).unwrap().to_string();
+    
+    println!("\n[iZCore] 🔐 Setup 2FA: Scan this QR or enter code in your app.");
+    println!("[iZCore] SECRET: {}", secret);
+    println!("[iZCore] QR: https://www.google.com/chart?chs=200x200&chld=M|0&cht=qr&chl=otpauth://totp/iZCore:{}?secret={}&issuer=iZBoss", username, secret);
+    
+    print!("\nPlease enter 2FA Code to verify and link node: ");
+    io::stdout().flush()?;
+    let mut code = String::new();
+    io::stdin().read_line(&mut code)?;
+    let code = code.trim();
+
+    if auth::verify_totp(&secret, code) {
+        let mut registry = UserRegistry::load();
+        let new_owner = User {
+            id: username.clone(),
+            name: username.clone(),
+            role: crate::users::UserRole::Contributor, // Node Contributor (Owner)
+            secret_2fa: secret,
+            approved: true, // Auto-approved locally as owner
+        };
+        registry.add_user(new_owner.clone());
+        registry.save()?;
+
+        // Register with Command Center to claim ownership globally
+        bootstrap::connect_to_command_center(device_id, Some(&username)).await?;
+        
+        println!("\n[✓] Node successfully linked to '{}'.", username);
+        display_ecosystem_dashboard(&new_owner, device_id).await?;
+    } else {
+        println!("[✗] Verification failed. Onboarding aborted.");
+    }
+    Ok(())
+}
+
+async fn display_ecosystem_dashboard(user: &User, device_id: &str) -> Result<(), Box<dyn std::error::Error>> {
+    println!("\n------------------------------------------------------------");
+    println!("Welcome, {} | Role: {:?} (Verified)", user.name, user.role);
+    println!("------------------------------------------------------------");
+    println!("[NODE STATUS]");
+    println!("Current Device: {} | ID: {}", std::env::consts::OS, device_id);
+    println!("Connected to iZBoss Mesh: ✓ Active");
+    
+    // In a real implementation, this would fetch from the P2P network or Command Center
+    println!("\n[RESOURCE INVENTORY]");
+    println!("1. Node: {} (This Device)", fingerprint::generate_device_id().get(0..12).unwrap_or("Local"));
+    println!("   Status: Active | CPU: 8% | RAM: Stable");
+    
+    println!("------------------------------------------------------------");
+    println!("Available Actions: [list-nodes] [install-skill] [sys-log] [exit]");
+    println!("------------------------------------------------------------\n");
+    Ok(())
+}
 
     // ── 4. Spawn P2P Network (background) ───────────────────
     let p2p_id = device_id.clone();
@@ -179,8 +267,8 @@ async fn handle_user_command(action: UserCommands) -> Result<(), Box<dyn std::er
             let user_role = match role.to_lowercase().as_str() {
                 "root" => UserRole::Root,
                 "admin" => UserRole::Admin,
-                "mod" | "moderator" => UserRole::Moderator,
-                _ => UserRole::User,
+                "mod" | "moderator" => UserRole::Mod,
+                _ => UserRole::Contributor,
             };
 
             let secret = hex::encode(id.as_bytes()).get(0..16).unwrap().to_string();

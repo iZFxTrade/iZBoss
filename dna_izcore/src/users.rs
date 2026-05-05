@@ -5,10 +5,10 @@ use std::path::Path;
 
 #[derive(Debug, Serialize, Deserialize, Clone, PartialEq)]
 pub enum UserRole {
-    Root,      // Founder: Complete control
-    Admin,     // Business management, secondary authorizations
-    Moderator, // Read-only access
-    User,      // Standard user: owns their own node but needs approval
+    Root,         // Founder: Complete control
+    Admin,        // Business management, approvals
+    Mod,          // Read-only monitoring
+    Contributor,  // Node Owner: contributes hardware
 }
 
 #[derive(Debug, Serialize, Deserialize, Clone)]

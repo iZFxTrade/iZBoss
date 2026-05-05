@@ -141,7 +141,7 @@ async function handleNodeRegister(request: Request, env: Env): Promise<Response>
         if (username) {
             await env.DB.prepare(`
                 INSERT INTO users (id, name, role, approved)
-                VALUES (?, ?, 'user', 0)
+                VALUES (?, ?, 'Contributor', 0)
                 ON CONFLICT(id) DO NOTHING
             `).bind(username, username).run();
         }
