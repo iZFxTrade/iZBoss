@@ -20,12 +20,17 @@ iZ.Life BOSS không dừng lại ở hạ tầng, chúng tôi xây dựng một 
 -   **Tự chủ Vận hành & Mở rộng**: Phòng Operations (HR) tự động "tuyển dụng" thêm Node từ cộng đồng hoặc tự thuê thêm VPS/Cloud để mở rộng sức mạnh tính toán khi dự án yêu cầu.
 -   **Dịch vụ ERP/CRM & Tài chính**: Cung cấp các giải pháp quản trị doanh nghiệp phi tập trung cho đối tác bên ngoài để gia tăng lợi nhuận.
 
-## 💰 Mô Hình Kinh Tế Token (Proof of Contribution)
-Mỗi User tham gia iZBoss sẽ được cấp một **Địa chỉ Ví duy nhất**. Hệ thống sẽ tự động trả thưởng Token dựa trên năng lực tính toán và giá trị thực tế mà Node đó đóng góp:
--   **Compute Rewards**: Trả thưởng cho việc cho mượn CPU/GPU để chạy Model AI.
--   **Trading Rewards**: Chia sẻ lợi nhuận khi Node tham gia vận hành các Bot tài chính thành công.
--   **Storage Rewards**: Thu nhập thụ động từ việc lưu trữ dữ liệu cho mạng lưới.
--   **Skill Rewards**: Thưởng cho việc phát triển và đóng góp các Kỹ năng (Skills) mới vào DNA.
+## 💰 iZWallet: Ví Tự Trị & Định Danh Số (Identity & Finance)
+iZCore hiện đã tích hợp sẵn hệ thống ví không lưu ký (non-custodial) mạnh mẽ:
+-   **Chuẩn BIP-39**: Sử dụng 24 từ khóa bí mật để toàn quyền làm chủ tài sản.
+-   **Định danh Node**: Địa chỉ ví chính là ID định danh duy nhất của Node trên mạng lưới P2P.
+-   **Xác thực Founder**: Tự động cấp quyền Root nếu địa chỉ ví khớp với `FOUNDER_WALLET_ADDRESS` được nhúng lúc build.
+-   **Ký số (Command Signing)**: Mọi lệnh điều hành nhạy cảm đều được ký bằng khóa bí mật của ví.
+-   **Quyết toán tự động**: Nhận thưởng "Proof of Contribution" (PoC) trực tiếp vào ví dựa trên đóng góp tài nguyên.
+
+```bash
+izcore wallet init
+```
 
 ---
 

@@ -20,12 +20,17 @@ iZ.Life BOSS goes beyond infrastructure; we are building an **Autonomous Digital
 -   **Autonomous Operations & Scaling**: The Operations (HR) department autonomously "recruits" new nodes from the community or leases VPS/Cloud resources to expand capacity based on project demand.
 -   **ERP/CRM & Financial Services**: Providing decentralized management solutions for external partners to maximize revenue.
 
-## 💰 Token Economy (Proof of Contribution)
-Every user joining iZBoss is assigned a **Unique Wallet Address**. The system automatically rewards tokens based on the computational power and actual value contributed by the node:
--   **Compute Rewards**: Earn for lending CPU/GPU power for AI models.
--   **Trading Rewards**: Share profits when your node helps operate successful financial bots.
--   **Storage Rewards**: Passive income from hosting data for the network.
--   **Skill Rewards**: Rewards for developing and contributing new Skills to the DNA.
+## 💰 iZWallet: Sovereign Wallet & Digital Identity
+iZCore now features a powerful, integrated non-custodial wallet system:
+-   **BIP-39 Standard**: 24-word recovery phrase for absolute asset ownership.
+-   **Node Identity**: Your wallet address serves as the unique identifier for your node on the P2P network.
+-   **Founder Verification**: Automatic Root access if the wallet address matches the embedded `FOUNDER_WALLET_ADDRESS`.
+-   **Digital Signing**: All sensitive system commands are signed using the wallet's private key.
+-   **Automated Settlements**: Receive "Proof of Contribution" (PoC) rewards directly for computational contributions.
+
+```bash
+izcore wallet init
+```
 
 ---
 

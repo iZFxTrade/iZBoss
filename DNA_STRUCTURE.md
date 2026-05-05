@@ -37,10 +37,11 @@ Modal chỉnh sửa Agent PHẢI chứa đủ 6 trường thông tin:
 - **Process Tracker**: Hiển thị Task, Agent, Node và Progress %.
 - **Finance Feed**: Thống kê Token Total vs Used, phân loại Model Trả phí ($) và Miễn phí (Free).
 
-## 6. Economic DNA (Token Economy)
-Hệ thống tích hợp lớp kinh tế để khuyến khích sự phát triển bền vững:
-- **Unique Node Wallets**: Mỗi thực thể iZCore được gán một địa chỉ ví định danh duy nhất.
-- **Proof of Contribution (PoC)**: Cơ chế xác thực đóng góp dựa trên:
+## 6. Economic DNA (Token Economy & Identity)
+Hệ thống tích hợp lớp kinh tế và định danh số dựa trên ví bản địa:
+- **Unique Node Wallets (iZWallet)**: Mỗi thực thể iZCore được gán một địa chỉ ví định danh dựa trên chuẩn BIP-39 (24 từ khóa).
+- **Identity-Wallet Link**: Địa chỉ ví chính là mã định danh thực tế của Node. Quyền hạn (Founder/Admin/Mod) được cấp dựa trên sự trùng khớp của địa chỉ ví với danh sách trắng (Whitelist) được nhúng lúc build.
+- **Proof of Contribution (PoC)**: Cơ chế xác thực đóng góp để trả thưởng tự động vào ví:
     - **Compute Power**: Năng lực xử lý CPU/GPU đóng góp cho mạng lưới.
     - **Task Execution**: Số lượng và độ chính xác của các tác vụ hoàn thành (Training, Trading, Bot).
     - **Storage Availability**: Độ tin cậy và dung lượng lưu trữ phân tán.
