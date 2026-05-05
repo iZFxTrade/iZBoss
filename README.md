@@ -1,9 +1,9 @@
-# 🌌 iZ.Life BOSS — Decentralized AI Infrastructure Network (DePIN)
-### Redefining Infrastructure & Intelligence Ownership | The Billion-Dollar Vision
+# 🌌 iZ.Life B.O.S.S. — Business Operating System Services
+### Decentralized AI Infrastructure Network (DePIN) | The Billion-Dollar Vision
 
 🇺🇸 **English** | 🇻🇳 [Tiếng Việt](README_VN.md)
 
-**iZ.Life BOSS** is not just software; it is a revolution in **Decentralized Physical Infrastructure Networks (DePIN)**. We are building a global Mesh network where every idle hardware device — from an old smartphone or PlayBox to a high-end server farm — can transform into an **Intelligence Node** to co-operate, co-earn, and co-profit.
+**iZ.Life B.O.S.S.** (Business Operating System Services) is not just software; it is a revolution in **Decentralized Physical Infrastructure Networks (DePIN)**. We are building a global Mesh network where every idle hardware device — from an old smartphone or PlayBox to a high-end server farm — can transform into an **Intelligence Node** to co-operate, co-earn, and co-profit.
 
 ---
 

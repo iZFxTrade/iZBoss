@@ -1,4 +1,4 @@
-# iZ.Life BOSS V24 Master DNA Structure
+# iZ.Life B.O.S.S. (Business Operating System Services) — Master DNA Structure
 
 Bản tài liệu này là "Hiến pháp" kỹ thuật cho BOSS Command Center. Mọi phiên bản nâng cấp (V25+) PHẢI tuân thủ các quy tắc cấu trúc dưới đây để đảm bảo không bị "nuốt menu" hoặc mất tính năng.
 

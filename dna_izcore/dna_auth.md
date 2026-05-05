@@ -2,7 +2,7 @@ iZCore Auth: Decentralized Multi-User Authentication System
 
 1. Overview
 
-iZCore Auth is the core security layer of the iZLife Operating System (iZLife OS). It provides a robust, decentralized, and lightweight authentication mechanism designed specifically for edge computing environments and high-performance distributed networks.
+iZCore Auth is the core security layer of the iZLife B.O.S.S. (Business Operating System Services). It provides a robust, decentralized, and lightweight authentication mechanism designed specifically for edge computing environments and high-performance distributed networks.
 
 Built with Rust, iZCore Auth utilizes industry-standard TOTP (Time-based One-Time Password) algorithms to verify identities across a network of autonomous nodes without relying on a central authority.
 
