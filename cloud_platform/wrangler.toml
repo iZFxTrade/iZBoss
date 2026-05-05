@@ -1,0 +1,24 @@
+name = "boss"
+main = "src/index.ts"
+compatibility_date = "2024-03-20"
+
+routes = [
+  { pattern = "boss.iz.life", custom_domain = true }
+]
+
+[ai]
+binding = "AI"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "bossizlife"
+database_id = "83b83dbd-89b3-4ac3-ab5b-507a98681b9d" # Use your actual ID if deploying via CLI
+
+[[kv_namespaces]]
+binding = "NEWS"
+id = "a483a061a1b94ca5b1b3edbcb8e468bc"
+
+[vars]
+TELEGRAM_TOKEN = "8438121452:AAF0J-6ALOFOHAl-0bFB_HNRD1iwMaCl8x4"
+TELEGRAM_SECRET = "boss_izlife_2026"
+MY_TELEGRAM_ID = "0" # Placeholder: BOSS HƯNG please update this in Cloudflare Dashboard

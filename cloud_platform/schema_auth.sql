@@ -1,0 +1,10 @@
+-- V26.6.0 - Cloudflare Zero Trust Auth (DEPRECATED)
+-- This file is no longer used. All authentication is handled externally via Cloudflare Access.
+-- The OTP authentication system has been removed in favor of Zero Trust policies.
+--
+-- DEPRECATED TABLES (kept for reference):
+-- - matrix_auth_sessions: No longer created or used
+-- - OTP generation and verification: Handled by Cloudflare Access policies
+--
+-- To clean up your D1 database, run:
+-- DROP TABLE IF EXISTS matrix_auth_sessions;

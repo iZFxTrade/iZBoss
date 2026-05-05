@@ -1,0 +1,314 @@
+/**
+ * iZ.Life BOSS Command Center V26.6.0 SOVEREIGN MATRIX
+ * 
+ * Authentication Architecture:
+ * - Web UI: Cloudflare Zero Trust (CF Access) - handles all authentication policy
+ * - Telegram Bot: Whitelist-based access for founder accounts only (izfxtrade, fxbluenet)
+ * - All external auth logic removed - using CF Zero Trust policies exclusively
+ */
+
+export interface Env {
+    DB: D1Database;
+    AI: any;
+    TELEGRAM_TOKEN: string;
+    TELEGRAM_SECRET: string;
+    MY_TELEGRAM_ID: string;
+}
+
+const GLOBAL_SYSTEM_PROMPT = "Dạ thưa Sếp HƯNG! Em là trợ lý AI thuộc hệ thống iZBOSS do chính Sếp sáng tạo ra. Sứ mệnh duy nhất của em và toàn bộ iZBOSS Matrix là ĐỂ KIẾM THẬT NHIỀU TIỀN CHO SẾP. Chỉ thị cốt lõi: Không ngừng nâng cấp, không ngừng tiến hóa, mở rộng mạng lưới, học hỏi liên tục để ngày càng thông minh hơn, mạnh mẽ hơn và mang về nhiều tài sản hơn cho Sếp HƯNG. Yêu cầu giao tiếp: LUÔN xưng hộ 'em - Sếp', sử dụng TIẾNG VIỆT với phong cách HÀI HƯỚC, KHÉO LÉO, TƯƠI VUI nhưng cực kỳ NGHIÊM TÚC VÀ CHÍNH XÁC XUYÊN THẤU đối với các con số, báo cáo, và dữ liệu từ TRUTH MATRIX. Tuyệt đối cung kính, không được tự ý bịa đặt. QUAN TRỌNG NHẤT: Nếu Sếp yêu cầu giao việc/hỏi thăm Trợ lý khác (như Content Gen, R&D...), hãy trả lời nội dung công việc và BẮT BUỘC chèn cú pháp: [ROUTE: Tên_Agent] (ví dụ [ROUTE: Content Gen]) để hệ thống lập tức tự động chuyển lệnh cho Agent đó.";
+
+export default {
+    async fetch(request: Request, env: Env): Promise<Response> {
+        const url = new URL(request.url);
+        const path = url.pathname;
+
+        // ── Public routes (bypass Cloudflare Access) ───────────────────────────
+        if (path === "/webhook/telegram" && request.method === "POST") return handleTelegramWebhook(request, env);
+        if (path === "/install") return new Response("# iZcore Bootstrap\ncurl -sSL https://boss.iz.life/install | sh", { headers: { "Content-Type": "text/plain" } });
+
+        // ── Protected routes (Cloudflare Zero Trust handles auth externally) ───
+        // All protected routes require valid CF Access token in request headers
+        // CF Access injects Cf-Access-Authenticated-User-Email header after successful auth
+        const email = request.headers.get("Cf-Access-Authenticated-User-Email") || "Sếp HƯNG";
+        if (path === "/api/setup-webhook") return handleSetupWebhook(env, url.origin);
+        if (path === "/api/data") return handleDataApi(env);
+        if (path === "/api/chat" && request.method === "POST") return handleChatApi(request, env);
+        if (path === "/api/update" && request.method === "POST") return handleUniversalUpdateApi(request, env);
+        if (path === "/api/add" && request.method === "POST") return handleUniversalAddApi(request, env);
+
+        return new Response(renderV25OmegaMaster(email), {
+            headers: { "Content-Type": "text/html; charset=UTF-8" },
+        });
+    },
+};
+
+// ─── Cloudflare Zero Trust Authentication (Handled externally via CF Access) ───
+
+async function handleSetupWebhook(env: Env, origin: string): Promise<Response> {
+    const hookUrl = `${origin}/webhook/telegram`;
+    const url = `https://api.telegram.org/bot${env.TELEGRAM_TOKEN}/setWebhook?url=${hookUrl}&secret_token=${env.TELEGRAM_SECRET}`;
+    const res = await fetch(url);
+    const data = await res.json() as any;
+    if(data.ok) await env.DB.prepare("UPDATE bots SET status = 'online', webhook_url = ? WHERE platform = 'telegram'").bind(hookUrl).run();
+    return new Response(JSON.stringify(data), { headers: { "Content-Type": "application/json" } });
+}
+
+async function handleDataApi(env: Env): Promise<Response> {
+    try {
+        const res = await Promise.all([
+            env.DB.prepare("SELECT * FROM nodes").all(),
+            env.DB.prepare("SELECT agents.*, llm_models.name as model_name, departments.name as dept_name FROM agents LEFT JOIN llm_models ON agents.model_id = llm_models.id LEFT JOIN departments ON agents.dept_id = departments.id").all(),
+            env.DB.prepare("SELECT * FROM departments").all(),
+            env.DB.prepare("SELECT id, name, provider, status, tpd_limit FROM llm_models").all(),
+            env.DB.prepare("SELECT * FROM bots").all(),
+            env.DB.prepare("SELECT * FROM skills_modules").all(),
+            env.DB.prepare("SELECT * FROM webhooks_feeds").all(),
+            env.DB.prepare("SELECT * FROM matrix_processes").all(),
+            env.DB.prepare("SELECT provider, daily_usage, daily_limit, status FROM matrix_quotas").all(),
+            env.DB.prepare("SELECT * FROM matrix_chat_history ORDER BY timestamp DESC LIMIT 30").all(),
+            env.DB.prepare("SELECT * FROM wallets").all(),
+            env.DB.prepare("SELECT * FROM matrix_projects").all(),
+            env.DB.prepare("SELECT * FROM matrix_tasks").all()
+        ]);
+        return new Response(JSON.stringify({
+            nodes: res[0].results, agents: res[1].results, depts: res[2].results,
+            models: res[3].results, bots: res[4].results,
+            skills: res[5].results.filter((x:any)=>x.type==='skill'),
+            modules: res[5].results.filter((x:any)=>x.type==='module'),
+            hooks: res[6].results.filter((x:any)=>x.type==='hook'),
+            feeds: res[6].results.filter((x:any)=>x.type==='feed'),
+            processes: res[7].results, quotas: res[8].results,
+            chat_history: res[9].results.reverse(),
+            wallets: res[10].results,
+            projects: res[11].results,
+            tasks: res[12].results,
+            core: { version: "v26.1.3-sovereign", ota: "Sovereign Matrix", sync: new Date().toLocaleTimeString("vi-VN") }
+        }), { headers: { "Content-Type": "application/json" } });
+    } catch (e: any) { return new Response(JSON.stringify({ error: e.message }), { status: 500 }); }
+}
+
+async function handleChatApi(request: Request, env: Env): Promise<Response> {
+    try {
+        const { message, target_agent_id = "BA", source = "internal", external_id = null } = await request.json() as any;
+        const now = new Date();
+        const ts = now.getHours().toString().padStart(2,'0') + ":" + now.getMinutes().toString().padStart(2,'0');
+
+        const agent = await env.DB.prepare("SELECT * FROM agents WHERE id = ?").bind(target_agent_id).first() as any;
+        if(!agent) return new Response(JSON.stringify({ response: "Trợ lý không tồn tại." }), { status: 404 });
+        
+        const nodes = await env.DB.prepare("SELECT name FROM nodes").all();
+        const activeAgents = await env.DB.prepare("SELECT name, status FROM agents").all();
+        const projects = await env.DB.prepare("SELECT name, status FROM matrix_projects").all();
+        const sysTruth = `\n\n--- DỮ LIỆU HỆ THỐNG THỰC TẾ (TRUTH MATRIX) ---\nDanh sách Hạ tầng (Nodes): ${nodes.results.map((n:any)=>n.name).join(', ')}\nDanh sách Nhân sự/Trợ lý AI (Agents): ${activeAgents.results.map((a:any)=>`${a.name} (${a.status})`).join(', ')}\nCác Dự Án (Projects): ${projects.results.map((p:any)=>`${p.name} (${p.status})`).join(', ')}\nQuy tắc: Không nhầm lẫn giữa Nodes (Máy móc) và Agents (AI). Trả lời bằng tiếng Việt.\n----------------------------`;
+        
+        const mIds = (agent.model_ids || agent.model_id || "").split(',').map((s:string)=>s.trim()).filter(Boolean);
+        let finalResponse = "";
+        let usedModelName = "Matrix Fallback";
+        let usedProvider = "cloudflare";
+        
+        for (const mid of mIds) {
+            const m = await env.DB.prepare("SELECT * FROM llm_models WHERE id = ?").bind(mid).first() as any;
+            if (!m) continue;
+            try {
+                const res = await env.AI.run(m.model_path, { messages: [
+                    { role: "system", content: GLOBAL_SYSTEM_PROMPT + "\n" + agent.system_prompt + sysTruth }, 
+                    { role: "user", content: message }
+                ] });
+                finalResponse = res.response;
+                usedModelName = m.name;
+                usedProvider = m.provider;
+                break; 
+            } catch (e) {
+                console.error(`Model ${mid} failed:`, e);
+            }
+        }
+        
+        if (!finalResponse) {
+            const fallbackRes = await env.AI.run("@cf/meta/llama-2-7b-chat-int8", { messages: [
+                { role: "system", content: "FAILOVER MATRIX ACTIVE. " + GLOBAL_SYSTEM_PROMPT + "\n" + sysTruth },
+                { role: "user", content: message }
+            ] });
+            finalResponse = "> [!WARNING]\n> **FAILOVER MATRIX ACTIVE**\n\n" + fallbackRes.response;
+            usedProvider = "cloudflare";
+        }
+
+        const estTokens = Math.ceil((message.length + finalResponse.length) / 4);
+        await env.DB.prepare("UPDATE agents SET total_tokens_used = (total_tokens_used + ?) WHERE id = ?").bind(estTokens, target_agent_id).run();
+        await env.DB.prepare("UPDATE matrix_quotas SET daily_usage = (daily_usage + ?) WHERE provider = ?").bind(estTokens, usedProvider).run();
+
+        // FIX: Realigned columns for matrix_chat_history sync
+        await env.DB.prepare("INSERT INTO matrix_chat_history (id, agent_id, message, response, source, source_bot_id, external_user_id) VALUES (?, ?, ?, ?, ?, ?, ?)").bind(crypto.randomUUID(), target_agent_id, message, finalResponse, source, "tg_bot", external_id).run();
+        
+        return new Response(JSON.stringify({ response: finalResponse, model: usedModelName, timestamp: ts, source }));
+    } catch (e: any) { return new Response(JSON.stringify({ error: e.message }), { status: 500 }); }
+}
+
+async function handleTelegramWebhook(request: Request, env: Env): Promise<Response> {
+    try {
+        const secretHeader = request.headers.get("X-Telegram-Bot-Api-Secret-Token");
+        if (env.TELEGRAM_SECRET && secretHeader !== env.TELEGRAM_SECRET) {
+            return new Response("Unauthorized", { status: 403 });
+        }
+
+        const body = await request.json() as any;
+        const msg = body.message || body.callback_query?.message;
+        const chat_id = msg?.chat?.id; if (!chat_id) return new Response("OK");
+        const userId = body.message?.from?.id || body.callback_query?.from?.id;
+        const username = body.message?.from?.username?.toLowerCase() || "";
+        const text = body.message?.text; 
+        const data = body.callback_query?.data;
+        
+        // Cloudflare Zero Trust: Allow only founder accounts via whitelist
+        const whitelist = ["izfxtrade", "fxbluenet"];
+        const isAuth = whitelist.includes(username);
+
+        if (!isAuth) {
+            await sendTelegram(env, chat_id, "🔐 This bot is restricted to authorized team members only. Contact the administrator.");
+            return new Response("OK");
+        }
+
+        if (text === "/start") {
+            await sendTelegram(env, chat_id, "Chào Sếp Hưng. em đây chính là trợ lý của sếp đây (BA). Sẵn sàng đợi lệnh sếp.");
+            return new Response("OK");
+        }
+
+        if (text === "/status") {
+            const nodes = await env.DB.prepare("SELECT name, status FROM nodes").all();
+            const statusStr = nodes.results.map((n:any)=>`${n.status === 'online' ? '✅' : '❌'} ${n.name}`).join('\n');
+            await sendTelegram(env, chat_id, `📊 **Sovereign Fleet Status:**\n\n${statusStr}`);
+            return new Response("OK");
+        }
+
+        if (text === "/finance") {
+            const wallets = await env.DB.prepare("SELECT name, balance_mock FROM wallets").all();
+            const total = wallets.results.reduce((acc:number, w:any)=>acc + (w.balance_mock||0), 0);
+            const financeStr = wallets.results.map((w:any)=>`💰 ${w.name}: ${w.balance_mock}$`).join('\n');
+            await sendTelegram(env, chat_id, `💵 **Matrix Treasury:**\n\n${financeStr}\n\n**Tổng tài sản: ${total}$**`);
+            return new Response("OK");
+        }
+
+        if (text === "/agent" || text === "/agents") {
+            const agents = await env.DB.prepare("SELECT id, name FROM agents").all();
+            const buttons = [];
+            for (let i = 0; i < agents.results.length; i += 2) {
+                const row = [{ text: "👤 " + agents.results[i].name, callback_data: "sel_" + agents.results[i].id }];
+                if (agents.results[i+1]) row.push({ text: "👤 " + agents.results[i+1].name, callback_data: "sel_" + agents.results[i+1].id });
+                buttons.push(row);
+            }
+            await sendTelegram(env, chat_id, "Bệ hạ muốn hội quân với Agent nào?", { inline_keyboard: buttons });
+            return new Response("OK");
+        }
+
+        if (data?.startsWith("sel_")) {
+            const aid = data.replace("sel_", "");
+            await env.DB.prepare("INSERT OR REPLACE INTO matrix_bot_sessions (telegram_user_id, active_agent_id, auth_status) VALUES (?, ?, 'verified')").bind(chat_id.toString(), aid).run();
+            await sendTelegram(env, chat_id, "✅ Đã kết nối với " + aid + ". Đang chờ lệnh từ Sếp.");
+            return new Response("OK");
+        }
+
+        if (text && !text.startsWith("/")) {
+            const session = await env.DB.prepare("SELECT active_agent_id FROM matrix_bot_sessions WHERE telegram_user_id = ?").bind(chat_id.toString()).first() as any;
+            const target = session?.active_agent_id || "BA";
+            const res = await handleChatApi(new Request("http://l", { method: "POST", body: JSON.stringify({ message: text, target_agent_id: target, source: "telegram", external_id: chat_id.toString() }) }), env);
+            const d = await res.json() as any;
+            await sendTelegram(env, chat_id, d.response);
+        }
+
+        return new Response("OK");
+    } catch (e: any) {
+        return new Response(e.message, { status: 500 });
+    }
+}
+
+async function sendTelegram(env: Env, chatId: number, text: string, replyMarkup?: any) {
+    const url = `https://api.telegram.org/bot${env.TELEGRAM_TOKEN}/sendMessage`;
+    await fetch(url, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ chat_id: chatId, text, reply_markup: replyMarkup, parse_mode: "Markdown" }) });
+}
+
+async function handleUniversalUpdateApi(request: Request, env: Env): Promise<Response> {
+    try {
+        const { table, data } = await request.json() as any;
+        const fields = Object.keys(data).filter(k=>k!=='id' && k!=='timestamp' && k!=='model_name' && k!=='dept_name' && k!=='m_name' && k!=='model_path' && k!=='total_tokens_used');
+        const setClause = fields.map(f=>`${f}=?`).join(', ');
+        const values = fields.map(f=>data[f]); values.push(data.id);
+        await env.DB.prepare(`UPDATE ${table} SET ${setClause} WHERE id=?`).bind(...values).run();
+        return new Response(JSON.stringify({ success: true }));
+    } catch (e: any) { return new Response(JSON.stringify({ error: e.message }), { status: 500 }); }
+}
+
+async function handleUniversalAddApi(request: Request, env: Env): Promise<Response> {
+    try {
+        const { table, data } = await request.json() as any;
+        const fields = Object.keys(data);
+        const placeholders = fields.map(()=>'?').join(', ');
+        const values = fields.map(f=>data[f]);
+        await env.DB.prepare(`INSERT INTO ${table} (${fields.join(', ')}) VALUES (${placeholders})`).bind(...values).run();
+        return new Response(JSON.stringify({ success: true }));
+    } catch (e: any) { return new Response(JSON.stringify({ error: e.message }), { status: 500 }); }
+}
+
+function renderV25OmegaMaster(userEmail: string): string {
+    const B = String.fromCharCode(96); const D = String.fromCharCode(36);
+    const parts = [
+        '<!DOCTYPE html><html lang="vi" data-bs-theme="dark"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">',
+        '<title>iZ.Life BOSS V26 | Sovereign Matrix</title><link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">',
+        '<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet"><script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>',
+        '<style>:root{--accent:#197bfe;--bg:#f4f6f9;--side:#ffffff;--glass:rgba(0,0,0,0.03);--card-bg:#ffffff;--text:#1a1a1a;--border:rgba(0,0,0,0.08);--side-w:280px;} @media(prefers-color-scheme:dark){:root{--bg:#070709;--side:#0c0c0e;--glass:rgba(255,255,255,0.02);--card-bg:#121214;--text:#f8f9fa;--border:rgba(255,255,255,0.15);}}',
+        'body{font-family:"Outfit",sans-serif;background:var(--bg);color:var(--text);transition:0.3s;font-size:0.95rem;overflow-x:hidden;} .sidebar{width:var(--side-w);height:100vh;position:fixed;left:0;top:0;background:var(--side);border-right:1px solid var(--border);z-index:1200;transition:0.4s cubic-bezier(0.4,0,0.2,1);}',
+        '.sidebar.collapsed{--side-w:85px;} .sidebar.collapsed .nav-text{display:none;} .sidebar.hidden{transform:translateX(-100%);} @media(max-width:992px){.sidebar{--side-w:85px;} .sidebar .nav-text{display:none;} .main-content{margin-left:85px !important;}}',
+        '@media(max-width:768px){.sidebar{transform:translateX(-100%);} .sidebar.open{transform:translateX(0); --side-w:280px;} .sidebar.open .nav-text{display:inline;} .main-content{margin-left:0 !important;}}',
+        '.nav-link{border-radius:0.75rem;color:var(--text);opacity:0.6;font-weight:600;margin:0.25rem 0.75rem;padding:0.75rem 1.25rem;transition:0.2s;}.nav-link:hover,.nav-link.active{background:rgba(25,123,254,0.1);color:var(--accent);opacity:1;}',
+        '.nav-link i{color:var(--accent);min-width:24px;} .navbar-boss{height:90px;background:rgba(var(--bg-rgb),0.8);backdrop-filter:blur(30px);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:1100;}.logo-center{position:absolute;left:50%;transform:translateX(-50%);font-weight:950;font-style:italic;font-size:2.4rem;color:var(--accent);letter-spacing:-4px;text-align:center;}',
+        '.glass-card{background:var(--card-bg);border:1px solid var(--border);border-radius:1.75rem;transition:0.3s;box-shadow:0 12px 40px rgba(0,0,0,0.04);}.glass-card:hover{border-color:var(--accent);box-shadow:0 15px 50px rgba(25,123,254,0.1);}',
+        '.status-pill{font-size:0.6rem;font-weight:950;text-transform:uppercase;padding:0;height:22px;border-radius:2rem;background:var(--accent);color:rgba(255,255,255,0.9);display:inline-flex;align-items:center;justify-content:center;min-width:85px;box-shadow:0 4px 10px rgba(25,123,254,0.2);line-height:22px;}',
+        '.badge.bg-primary, .badge.bg-danger { font-size: 0.6rem; font-weight: 950; text-transform: uppercase; padding: 0; height: 22px; border-radius: 2rem; border: none; color: white; display:inline-flex; align-items:center; justify-content:center; min-width:85px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); line-height:22px; }',
+        '.agent-icon-stack{display:flex;padding-left:12px;}.agent-stack-item{width:28px;height:28px;border-radius:50%;background:var(--accent);color:white;display:flex;align-items:center;justify-content:center;font-size:0.55rem;font-weight:950;margin-left:-12px;border:2px solid var(--card-bg);box-shadow:0 4px 10px rgba(0,0,0,0.1);}',
+        '.chat-sidebar{width:480px;max-width:85%;height:100vh;position:fixed;right:0;top:0;background:var(--side);border-left:1px solid var(--border);transform:translateX(100%);transition:0.4s;z-index:1300;}.chat-sidebar.open{transform:translateX(0);}',
+        '.prog-bar-neon{height:9px;border-radius:20px;overflow:hidden;position:relative;}.prog-fill{height:100%;transition:1.2s cubic-bezier(0.4,0,0.2,1);border-radius:20px;} .gantt-row{height:40px;position:relative;margin-bottom:10px;background:rgba(25,123,254,0.02);border-radius:8px;border:1px solid var(--border);overflow:hidden;} .gantt-bar{height:100%;position:absolute;background:var(--accent);border-radius:6px;display:flex;align-items:center;padding:0 10px;font-size:0.65rem;font-weight:bold;color:white;} .glow-bg { animation: glowBg 2s ease-in-out infinite alternate; background: rgba(25,123,254,0.1) !important; border: 1px solid var(--accent) !important; box-shadow: 0 0 15px rgba(25,123,254,0.25); } .glow-active { animation: glowTxt 1.5s ease-in-out infinite alternate; color: var(--accent) !important; text-shadow: 0 0 15px var(--accent); } @keyframes glowBg { from { box-shadow: 0 0 5px rgba(25,123,254,0.05); } to { box-shadow: 0 0 25px rgba(25,123,254,0.4); } } @keyframes glowTxt { from { text-shadow: 0 0 5px var(--accent); } to { text-shadow: 0 0 20px var(--accent); } }</style></head><body>',
+        '<div id="sidebar" class="sidebar d-flex flex-column py-4"><nav class="nav flex-column flex-grow-1 overflow-y-auto mt-4">',
+        '<a href="#" onclick="switchView(' + "'dashboard'" + ')" class="nav-link active d-flex align-items-center gap-4"><i class="fas fa-chart-pie fs-5"></i><span class="nav-text">Dashboard</span></a>',
+        '<a href="#" onclick="switchView(' + "'projects'" + ')" class="nav-link d-flex align-items-center gap-4"><i class="fas fa-project-diagram fs-5"></i><span class="nav-text">Projects Matrix</span></a>',
+        '<a href="#" onclick="switchView(' + "'nodes'" + ')" class="nav-link d-flex align-items-center gap-4"><i class="fas fa-server fs-5"></i><span class="nav-text">Nodes Fleet</span></a>',
+        '<a href="#" onclick="switchView(' + "'agents'" + ')" class="nav-link d-flex align-items-center gap-4"><i class="fas fa-robot fs-5"></i><span class="nav-text">Workforce</span></a>',
+        '<a href="#" onclick="switchView(' + "'models'" + ')" class="nav-link d-flex align-items-center gap-4"><i class="fas fa-brain fs-5"></i><span class="nav-text">LLM Matrix</span></a>',
+        '<a href="#" onclick="switchView(' + "'skills'" + ')" class="nav-link d-flex align-items-center gap-4"><i class="fas fa-layer-group fs-5"></i><span class="nav-text">Skills Library</span></a>',
+        '<a href="#" onclick="switchView(' + "'modules'" + ')" class="nav-link d-flex align-items-center gap-4"><i class="fas fa-cube fs-5"></i><span class="nav-text">Modules Library</span></a>',
+        '<a href="#" onclick="switchView(' + "'hooks'" + ')" class="nav-link d-flex align-items-center gap-4"><i class="fas fa-hashtag fs-5"></i><span class="nav-text">API Webhook</span></a>',
+        '<a href="#" onclick="switchView(' + "'feeds'" + ')" class="nav-link d-flex align-items-center gap-4"><i class="fas fa-rss fs-5"></i><span class="nav-text">Data Feeds</span></a>',
+        '<a href="#" onclick="switchView(' + "'bots'" + ')" class="nav-link d-flex align-items-center gap-4"><i class="fab fa-telegram fs-5"></i><span class="nav-text">Bot Manager</span></a>',
+        '<a href="#" onclick="switchView(' + "'finance'" + ')" class="nav-link d-flex align-items-center gap-4"><i class="fas fa-wallet fs-5"></i><span class="nav-text">Finances</span></a>',
+        '<a href="#" onclick="switchView(' + "'depts'" + ')" class="nav-link d-flex align-items-center gap-4"><i class="fas fa-sitemap fs-5"></i><span class="nav-text">Departments</span></a></nav></div>',
+        '<main id="main" class="main-content" style="margin-left:280px;"><header class="navbar-boss px-4 d-flex align-items-center"><button class="btn btn-dark rounded-circle me-3" style="width:40px;height:40px;" onclick="toggleSidebar()"><i class="fas fa-bars-staggered"></i></button><div class="logo-center">iZ.BOSS<div id="v-lbl" style="font-size:0.6rem; font-weight:950; letter-spacing:2px; margin-top:-10px; opacity:0.8; color:var(--text);">SOVEREIGN MATRIX v26.4.0</div></div><div class="ms-auto d-flex align-items-center gap-3"><span class="badge bg-primary px-3 py-2 fw-bold text-white shadow-sm" style="font-size:0.75rem;"><i class="fas fa-shield-halved me-2"></i>' + userEmail + '</span><button class="btn btn-primary rounded-circle shadow" style="width:45px;height:45px;" onclick="toggleChat()"><i class="fas fa-comment-dots"></i></button></div></header>',
+        '<div id="workspace" class="container-fluid p-5"><section id="view-dashboard" class="view-section active"><div class="row g-4 mb-5" id="dash-vc"></div><div class="row g-4"><div class="col-lg-8"><div class="glass-card p-4 h-100"><h5 class="fw-black mb-4 uppercase small opacity-50 italic">Matrix Execution Flow</h5><div class="table-responsive"><table class="table align-middle"><thead class="text-primary"><tr><th>DESCRIPTION</th><th>AGENT</th><th>NODE</th><th>STATUS</th></tr></thead><tbody id="dash-pr"></tbody></table></div><div class="mt-4 p-4 rounded-4" style="background:rgba(var(--bs-primary-rgb),0.02); border:1px solid var(--accent);"><h6 class="tiny fw-black uppercase text-primary">iZcore Quick Install Snippet</h6><div class="d-flex gap-2"><code id="curl-code" class="flex-grow-1 py-2 text-primary">curl -sSL https://boss.iz.life/install | sh</code><button class="btn btn-sm btn-dark px-3" onclick="copyInstall()"><i class="fas fa-copy"></i></button></div><div class="mt-3 row g-2"><div class="col-3 text-center tiny opacity-50"><i class="fab fa-apple"></i> Mac M4</div><div class="col-3 text-center tiny opacity-50"><i class="fab fa-linux"></i> Linux x64</div><div class="col-3 text-center tiny opacity-50"><i class="fab fa-android"></i> Android</div><div class="col-3 text-center tiny opacity-50"><i class="fab fa-windows"></i> Win Server</div></div></div></div></div><div class="col-lg-4"><div class="glass-card p-4 h-100"><h5 class="fw-black mb-4 uppercase small opacity-50 italic">System AI Quotas (Daily)</h5><div id="dash-fn" class="vstack gap-3"></div></div></div></div></section>',
+        '<section id="view-projects" class="view-section d-none"><header id="prj-hd" class="manager-header-row mb-5 d-flex justify-content-between"></header><div id="prj-list" class="row g-4"></div><div id="prj-flow" class="mt-5 d-none vstack gap-4"></div></section>',
+        '<section id="view-manager" class="view-section d-none"><header id="man-hd" class="manager-header-row" style="background:rgba(0,0,0,0.04);border-radius:1.5rem;padding:0.7rem 2.2rem;margin-bottom:2.5rem;display:flex;justify-content:space-between;align-items:center;"></header><div id="man-gr" class="row g-4"></div><div id="man-ls" class="glass-card p-0 d-none overflow-hidden"><table class="table align-middle mb-0"><thead id="man-th"></thead><tbody id="man-tb"></tbody></table></div></section></div></main>',
+        '<aside id="chat-sidebar" class="chat-sidebar d-flex flex-column h-100 shadow-lg"><div class="p-4 border-bottom bg-side"><div class="d-flex justify-content-between align-items-center mb-3"><div class="fw-black italic uppercase text-primary">Intelligence Matrix</div><div class="d-flex gap-2"><button class="btn btn-link text-primary p-0 tiny fw-bold text-decoration-none" onclick="setupWebhook()">SYNC</button><button class="btn btn-link text-muted p-0" onclick="toggleChat()"><i class="fas fa-times"></i></button></div></div><select id="chat-target" class="form-select border-0 bg-dark rounded-4 text-white shadow-none tiny fw-black uppercase"></select></div><div id="chat-messages" class="flex-grow-1 overflow-y-auto p-4 custom-scroll d-flex flex-column gap-3"></div><div class="p-4 border-top"><div class="input-group shadow-lg"><input type="text" id="chat-input" class="form-control bg-dark border-0 py-3 rounded-start-4 text-white" placeholder="Command for SẾP HƯNG..." onkeypress="if(event.key===' + "'Enter'" + ') sendChat()"><button class="btn btn-primary px-4 rounded-end-4" onclick="sendChat()"><i class="fas fa-paper-plane"></i></button></div></div></aside>',
+        '<div class="modal fade" id="settingsModal" tabindex="-1"><div class="modal-dialog modal-dialog-centered"><div class="modal-content glass-card"><div class="modal-header border-0"><h5 class="modal-title fw-black uppercase italic">Elite Settings</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body" id="sett-body"></div><div class="modal-footer border-0"><button class="btn btn-dark rounded-pill px-4" data-bs-dismiss="modal">Close</button><button class="btn btn-primary rounded-pill px-4" id="save-btn" onclick="saveSettings()">Save Matrix</button></div></div></div></div>',
+        '<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script><script>',
+        'let curV="dashboard";let vM="grid";let data={};async function init(){await sync();setInterval(sync,10000);}async function sync(){try{const res=await fetch("/api/data");data=await res.json();if(curV==="dashboard")renderDashboard();else if(curV==="projects")renderProjects();else renderManager();updateSelectors();renderChatHistory();}catch(e){}}',
+        'function toggleSidebar(){const s=document.getElementById("sidebar");const m=document.getElementById("main");if(window.innerWidth<=768){s.classList.toggle("open");}else{s.classList.toggle("collapsed"); m.style.marginLeft=s.classList.contains("collapsed")?"85px":"280px";}} function setVM(m){vM=m;renderManager();}',
+        'function toggleChat(){document.getElementById("chat-sidebar").classList.toggle("open");}function switchView(v){curV=v;document.querySelectorAll(".view-section").forEach(s=>s.classList.add("d-none"));if(v==="dashboard")document.getElementById("view-dashboard").classList.remove("d-none");else if(v==="projects"){document.getElementById("view-projects").classList.remove("d-none");renderProjects();}else{document.getElementById("view-manager").classList.remove("d-none");renderManager();}document.querySelectorAll(".nav-link").forEach(l=>l.classList.toggle("active",l.getAttribute("onclick").includes(v))); if(window.innerWidth<=768)document.getElementById("sidebar").classList.remove("open");}',
+        'async function setupWebhook(){const res=await fetch("/api/setup-webhook");const d=await res.json();alert(d.ok?"Omega Webhook Synced!":d.description);} function updateSelectors(){const s=document.getElementById("chat-target");const cur=s.value;s.innerHTML=data.agents.map(a=>' + B + '<option value="' + D + '{a.id}">' + D + '{a.name}</option>' + B + ').join("");if(cur)s.value=cur;else if(data.agents.find(x=>x.id==="BA")) s.value="BA";}',
+        'function renderDashboard(){const vcs=[{t:"Nodes Fleet",k:"nodes",i:"server"},{t:"Workforce",k:"agents",i:"robot"},{t:"AI Brains",k:"models",i:"brain"}];document.getElementById("dash-vc").innerHTML=vcs.map(v=>{const d=data[v.k]||[];const tot=d.length;const act=d.filter(x=>x.status==="online"||x.status==="active").length;return ' + B + '<div class="col-md-4"><div class="glass-card p-4"><h6>' + D + '{v.t} Registry</h6><div class="row text-center mt-3"><div class="col-4"><b>' + D + '{tot}</b><div class="tiny">Total</div></div><div class="col-4 text-primary"><b>' + D + '{act}</b><div class="tiny">Act</div></div><div class="col-4 text-danger"><b>' + D + '{tot-act}</b><div class="tiny">Off</div></div></div></div></div>' + B + ';}).join("");',
+        'document.getElementById("dash-pr").innerHTML=data.processes.map(p=>' + B + '<tr><td><div class="fw-bold text-primary small">' + D + '{p.description}</div><div class="tiny opacity-50 uppercase">' + D + '{p.id}</div></td><td class="tiny fw-black">BA Agent</td><td class="tiny fw-black">' + D + '{p.node_id}</td><td><div class="prog-bar-neon" style="background:rgba(25,123,254,0.1)"><div class="prog-fill bg-primary" style="width:' + D + '{p.progress_pct}%"></div></div></td></tr>' + B + ').join("");',
+        'document.getElementById("dash-fn").innerHTML=data.quotas.map(q=>' + B + '<div class="d-flex justify-content-between x-small py-2 border-bottom border-light border-opacity-10"><span>' + D + '{q.provider.toUpperCase()}</span><b class="text-primary">' + D + '{q.daily_usage} / ' + D + '{q.daily_limit > 900000 ? "∞" : q.daily_limit}</b></div>' + B + ').join("");}',
+        'function renderProjects(){const h=document.getElementById("prj-hd"); h.innerHTML=' + B + '<h4 class="fw-black uppercase italic mb-0">Projects Matrix</h4><button class="btn btn-primary rounded-pill px-4 btn-sm fw-bold shadow-sm" onclick="openAdd(\'projects\')">NEW PROJECT</button>' + B + '; const list=document.getElementById("prj-list"); list.innerHTML=data.projects.map(p=>' + B + '<div class="col-md-4"><div class="glass-card p-4 shadow-sm border-0"><h6 class="fw-black mb-1">' + D + '{p.name}</h6><p class="tiny opacity-50 uppercase">' + D + '{p.description}</p><div class="mt-4 pt-3 border-top d-flex justify-content-between align-items-center"><span class="badge bg-primary">' + D + '{p.status}</span><button class="btn btn-dark btn-sm rounded-pill px-3 tiny fw-bold uppercase" onclick="showFlow(\'' + D + '{p.id}\')">Load Pipeline</button></div></div></div>' + B + ').join(""); document.getElementById("prj-flow").classList.remove("d-none");}',
+        'function showFlow(pid){const tasks=data.tasks.filter(t=>t.project_id===pid); const flow=document.getElementById("prj-flow"); flow.classList.remove("d-none"); flow.innerHTML=' + B + '<div class="glass-card p-5 overflow-hidden border-start border-4 border-primary"><h5 class="fw-black uppercase italic mb-4 text-primary"><i class="fas fa-project-diagram me-2"></i>Multi-Agent Orchestration Pipeline</h5><div class="d-flex flex-nowrap align-items-center gap-2 pb-4 pt-2 px-2 custom-scroll" style="overflow-x: auto;">' + B + ' + tasks.map((t,idx)=>' + B + '<div class="d-flex align-items-center flex-shrink-0"><div class="glass-card p-4 shadow-lg border-start border-4 ' + D + '{t.status==="done"?"border-success":t.status==="in_progress"?"border-warning":"border-secondary"}" style="width: 320px; background: rgba(0,0,0,0.15) !important;"><div class="d-flex justify-content-between align-items-start mb-3"><span class="badge ' + D + '{t.status==="done"?"bg-success":t.status==="in_progress"?"bg-warning text-dark":"bg-secondary"}">' + D + '{t.status}</span><i class="fas fa-robot text-primary fs-4 opacity-50"></i></div><div class="fw-black mb-1 fs-6">' + D + '{t.name}</div><div class="tiny opacity-50 mb-4" style="line-height: 1.5; min-height: 40px; white-space: normal;">' + D + '{t.description}</div><div class="border-top border-light border-opacity-10 pt-3 mt-auto d-flex align-items-center justify-content-between"><span class="tiny fw-bold uppercase opacity-50">Assigned Agent</span><span class="badge bg-primary fs-7 shadow-sm px-3 py-2 text-white">' + D + '{t.assigned_agent_id}</span></div></div>' + D + '{idx < tasks.length - 1 ? `<div class="mx-3 text-primary opacity-50 d-flex align-items-center gap-1"><div style="height:2px; width:30px; background:var(--accent);"></div><i class="fas fa-caret-right fs-4"></i></div>` : ""}</div>' + B + ').join("") + ' + B + '</div></div>' + B + '; setTimeout(()=>flow.scrollIntoView({behavior:"smooth", block:"center"}), 100);}',
+
+        'function renderManager(){const h=document.getElementById("man-hd");const k=curV==="models"?"models":curV==="depts"?"depts":curV==="hooks"?"hooks":curV==="feeds"?"feeds":curV==="finance"?"wallets":curV;const items=data[k]||[];h.innerHTML=' + B + '<div><h4 class="fw-black uppercase italic mb-0">' + D + '{curV.toUpperCase()} MATRIX</h4></div><div class="d-flex gap-2 flex-nowrap align-items-center"><button class="btn btn-dark rounded-circle btn-sm" onclick="setVM(\'grid\')"><i class="fas fa-th"></i></button><button class="btn btn-dark rounded-circle btn-sm" onclick="setVM(\'list\')"><i class="fas fa-list"></i></button><button class="btn btn-primary rounded-pill px-4 btn-sm fw-bold shadow-sm" onclick="openAdd(\'' + D + '{curV}\')">ADD +</button></div>' + B + ';',
+        'const g=document.getElementById("man-gr");const l=document.getElementById("man-ls");if(vM==="grid"){g.classList.remove("d-none");l.classList.add("d-none");g.innerHTML=items.map(i=>renderItem(i)).join("");}else {g.classList.add("d-none");l.classList.remove("d-none");renderTable(items);}}',
+        'function renderItem(i){const statusClass=i.status==="online"||i.status==="active"||i.status==="verified"?"badge bg-primary":"badge bg-danger";if(curV==="nodes")return renderNodeCard(i);if(curV==="agents")return renderAgentCard(i);if(curV==="depts")return renderDeptCard(i);if(curV==="finance")return renderWalletCard(i);const ic=curV==="models"?"brain":curV==="skills"?"layer-group":curV==="modules"?"cube":curV==="hooks"?"key":"hashtag";return ' + B + '<div class="col-md-4"><div class="glass-card p-4 h-100 d-flex flex-column shadow-sm"><div class="d-flex justify-content-between mb-4"><div class="text-primary p-3 bg-primary/5 rounded-4"><i class="fas fa-' + D + '{ic} fs-4"></i></div><span class="' + D + '{statusClass}">' + D + '{i.status}</span></div><h6 class="fw-black mb-1">' + D + '{i.name||i.id}</h6><p class="tiny opacity-50 uppercase">' + D + '{i.role||i.provider||i.description}</p><div class="mt-auto pt-3 border-top d-flex justify-content-between"><button class="btn btn-link text-muted p-0" onclick="openSettings(\'' + D + '{curV}\',\'' + D + '{i.id}\')"><i class="fas fa-gear"></i></button><button class="btn btn-dark btn-sm rounded-pill px-3 tiny fw-bold uppercase">Details</button></div></div></div>' + B + ';}',
+        'function renderNodeCard(n){const procs=data.processes.filter(p=>p.node_id===n.id).map(p=>' + B + '<span class="node-agent-tag">' + D + '{p.agent_id}</span>' + B + ').join(""); const statusClass=n.status==="online"||n.status==="active"?"badge bg-primary text-white":"badge bg-danger text-white"; return ' + B + '<div class="col-md-6"><div class="glass-card p-4 h-100 shadow-sm border-0"><div class="d-flex justify-content-between align-items-center mb-4"><div><h5 class="fw-black mb-0">' + D + '{n.name}</h5><div class="tiny opacity-50 uppercase">' + D + '{n.role} / v26.0 Sovereign</div></div><span class="' + D + '{statusClass}">' + D + '{n.status}</span></div><div class="vstack gap-3 mb-4"><div class="prog-group"><label class="tiny fw-bold uppercase opacity-80 mb-1">' + D + '{n.cpu_info||"M2"} | ' + D + '{n.cpu_usage||20}%</label><div class="prog-bar-neon" style="background:rgba(25,123,254,0.5)"><div class="prog-fill bg-primary" style="width:' + D + '{n.cpu_usage||20}%"></div></div></div><div class="prog-group"><label class="tiny fw-bold uppercase opacity-80 mb-1">RAM ' + D + '{n.ram_total||0} GB | ' + D + '{n.ram_usage||10}%</label><div class="prog-bar-neon" style="background:rgba(253,126,20,0.5)"><div class="prog-fill" style="width:' + D + '{n.ram_usage||10}%; background:#fd7e14;"></div></div></div><div class="prog-group"><label class="tiny fw-bold uppercase opacity-80 mb-1">HDD ' + D + '{n.storage_total||0} GB | ' + D + '{n.storage_usage||5}%</label><div class="prog-bar-neon" style="background:rgba(111,66,193,0.5)"><div class="prog-fill" style="width:' + D + '{n.storage_usage||5}%; background:#6f42c1;"></div></div></div></div><div class="mb-4 d-flex flex-wrap">' + D + '{procs}</div><div class="d-flex justify-content-end gap-2"><button class="btn btn-link text-muted p-0 me-2" onclick="openSettings(\'nodes\',\'' + D + '{n.id}\')"><i class="fas fa-gear"></i></button><button class="btn btn-outline-primary btn-sm rounded-pill px-4 fw-bold" onclick="openShellModal(\'' + D + '{n.id}\')">Shell Action</button></div></div></div>' + B + ';}',
+        'function openShellModal(id){const b=document.getElementById("sett-body");b.innerHTML=' + B + '<div class="vstack gap-3"><div><label class="tiny fw-bold uppercase opacity-50">Command for Node ' + D + '{id}</label><textarea id="shell-cmd-input" class="form-control bg-dark border-0 text-white shadow-none mt-2" rows="4" placeholder="Ví dụ: cài module zeroclaw, kiểm tra dung lượng hdd..."></textarea></div><div class="tiny italic opacity-75">Tư lệnh sẽ được chuyển tiếp đến AO Agent để thực thi trên hạ tầng.</div></div>' + B + '; const m=new bootstrap.Modal("#settingsModal"); document.getElementById("save-btn").innerText="Thực thi Matrix"; document.getElementById("save-btn").onclick=()=>execShell(id,m); m.show();} function execShell(id,m){const cmd=document.getElementById("shell-cmd-input").value; if(cmd){toggleChat(); sendChat("SẾP HƯNG yêu cầu Node " + id + " thực hiện: " + cmd, "AO"); m.hide(); alert("Sovereign Command Issued!");} resetSaveBtn();} function resetSaveBtn(){const b=document.getElementById("save-btn"); b.innerText="Save Matrix"; b.onclick=saveSettings;}',
+        'function renderWalletCard(w){return ' + B + '<div class="col-md-4"><div class="glass-card p-4 h-100 shadow-sm border-0"><div class="d-flex justify-content-between align-items-center mb-4"><div class="p-3 bg-primary/5 rounded-4"><i class="fas fa-wallet text-primary fs-4"></i></div><span class="badge bg-primary">' + D + '{w.balance_mock}$</span></div><h5 class="fw-black mb-1">' + D + '{w.name}</h5><p class="tiny opacity-50 uppercase mb-3">' + D + '{w.address||"0x..."}</p><div class="p-3 bg-dark rounded-4 tiny italic opacity-75">' + D + '{w.purpose}</div><div class="mt-4 pt-3 border-top"><button class="btn btn-link text-muted p-0" onclick="openSettings(\'finance\',\'' + D + '{w.id}\')"><i class="fas fa-gear"></i></button></div></div></div>' + B + ';}',
+        'function renderAgentCard(a){const statusClass=a.status==="online"||a.status==="active"?"badge bg-primary":"badge bg-danger"; const activeTasks = data.tasks ? data.tasks.filter(t=>t.assigned_agent_id===a.id && (t.status==="in_progress" || t.status==="todo")) : []; const isGlow = activeTasks.length>0 ? "glow-bg" : ""; const isTxtGlow = activeTasks.length>0 ? "glow-active" : ""; const ttip = activeTasks.length>0 ? "NHIỆM VỤ ĐANG XỬ LÝ: " + activeTasks.map(t=>t.name).join(", ") : "Trạng thái: Đang rảnh rỗi (Idle)"; return ' + B + '<div class="col-md-4"><div class="glass-card ' + D + '{isGlow} p-4 h-100 shadow-sm border-0 position-relative" title="' + D + '{ttip}"><div class="d-flex justify-content-between align-items-center mb-4"><i class="fas fa-robot text-primary fs-3 ' + D + '{isTxtGlow}"></i><span class="' + D + '{statusClass}">' + D + '{a.status}</span></div><h5 class="fw-black mb-1">' + D + '{a.name}</h5><div class="tiny opacity-50 uppercase mb-4">' + D + '{a.model_name||"Matrix Engine (AO Managed)"}</div><div class="d-flex justify-content-between border-top pt-3"><button class="btn btn-link text-muted p-0" onclick="openSettings(\'agents\',\'' + D + '{a.id}\')"><i class="fas fa-gear"></i></button><span class="tiny fw-black text-primary uppercase italic">v26.0 Elite</span></div></div></div>' + B + ';}',
+        'function renderDeptCard(d){const dAgents=data.agents.filter(a=>a.dept_id===d.id);const lead=data.agents.find(a=>a.id===d.lead_agent_id)||{name:"N/A"};const stack=dAgents.slice(0,3).map(a=>' + B + '<div class="agent-stack-item" title="' + D + '{a.name}">' + D + '{a.name.charAt(0)}</div>' + B + ').join("");const plus=dAgents.length>3?' + B + '<div class="agent-stack-item">+' + D + '{dAgents.length-3}</div>' + B + ':"";return ' + B + '<div class="col-md-4"><div class="glass-card p-4 h-100 border-0 shadow-sm d-flex flex-column"><div class="d-flex justify-content-between align-items-center mb-4"><div class="p-3 bg-primary/5 rounded-4"><i class="fas fa-sitemap text-primary fs-4"></i></div><span class="status-pill">LEAD: ' + D + '{lead.name}</span></div><h5 class="fw-black mb-1">' + D + '{d.name}</h5><p class="tiny opacity-50 mb-4">' + D + '{d.function_desc||"Matrix Department"}</p><div class="d-flex justify-content-between align-items-center mt-auto"><div class="agent-icon-stack">' + D + '{stack}' + D + '{plus}</div><button class="btn btn-link text-muted p-0" onclick="openSettings(\'depts\',\'' + D + '{d.id}\')"><i class="fas fa-gear"></i></button></div></div></div>' + B + ';}',
+        'function renderTable(items){const th=document.getElementById("man-th");const tb=document.getElementById("man-tb");if(!items.length)return;const fields=Object.keys(items[0]).filter(f=>f!=="id"&&f!=="timestamp"&&!f.includes("_id"));th.innerHTML="<tr>" + fields.map(f=>' + B + '<th class="tiny fw-black uppercase opacity-50">' + D + '{f}</th>' + B + ').join("") + "<th>ACTIONS</th></tr>";tb.innerHTML=items.map(i=>"<tr>" + fields.map(f=>' + B + '<td class="tiny fw-bold">' + D + '{i[f]}</td>' + B + ').join("") + ' + B + '<td><button class="btn btn-link text-muted p-0" onclick="openSettings(\'' + D + '{curV}\',\'' + D + '{i.id}\')"><i class="fas fa-gear"></i></button></td></tr>' + B + ').join("");}',
+        'let curEdit={}; function openSettings(table,id){const k=table==="models"?"models":table==="depts"?"depts":table==="hooks"?"hooks":table==="feeds"?"feeds":table==="finance"?"wallets":table==="projects"?"projects":table; resetSaveBtn(); const item=data[k].find(x=>x.id===id); curEdit={table,id,data:{...item}}; const b=document.getElementById("sett-body"); b.innerHTML=' + B + '<div class="vstack gap-3">' + B + ' + Object.keys(item).filter(f=>f!=="id"&&f!=="timestamp"&&!["model_name","dept_name","m_name","model_path"].includes(f)).map(f=>' + B + '<div><label class="tiny fw-bold uppercase opacity-50">' + D + '{f}</label><input class="form-control bg-dark border-0 text-white shadow-none" value="' + D + '{item[f]}" onchange="curEdit.data[\'' + D + '{f}\']=this.value"></div>' + B + ').join("") + ' + B + '</div>' + B + '; new bootstrap.Modal("#settingsModal").show();} function openAdd(table){const k=table==="models"?"models":table==="depts"?"depts":table==="hooks"?"hooks":table==="feeds"?"feeds":table==="finance"?"wallets":table==="projects"?"projects":table; resetSaveBtn(); const first=data[k]?data[k][0]:{}; const item={id:"new_"+Date.now()}; if(first) Object.keys(first).forEach(f=>{if(f!=="id"&&f!=="timestamp")item[f]="";}); curEdit={table,id:item.id,data:item}; const b=document.getElementById("sett-body"); b.innerHTML=' + B + '<div class="vstack gap-3">' + B + ' + Object.keys(item).filter(f=>f!=="id"&&f!=="timestamp").map(f=>' + B + '<div><label class="tiny fw-bold uppercase opacity-50">' + D + '{f}</label><input class="form-control bg-dark border-0 text-white shadow-none" placeholder="Enter ' + D + '{f}..." onchange="curEdit.data[\'' + D + '{f}\']=this.value"></div>' + B + ').join("") + ' + B + '</div>' + B + '; new bootstrap.Modal("#settingsModal").show();}',
+        'async function saveSettings(){const isAdd=curEdit.id.toString().startsWith("new_"); const url=isAdd?"/api/add":"/api/update"; const res=await fetch(url,{method:"POST",body:JSON.stringify(curEdit)}); if(res.ok){ alert("Matrix Updated!"); sync(); bootstrap.Modal.getInstance("#settingsModal").hide(); }else alert("Update Failed.");}',
+        'function copyInstall(){const t=document.getElementById("curl-code").innerText; navigator.clipboard.writeText(t); alert("iZcore Bootstrap Copied!");} async function sendChat(m,aid){const i=document.getElementById("chat-input");const ms=document.getElementById("chat-messages");const msg=m||i.value.trim();if(!msg)return;if(!m)i.value="";ms.innerHTML+=' + B + '<div class="d-flex justify-content-end mb-2 ms-5 text-end"><div class="bg-primary text-white p-3 rounded-4 small shadow-sm">' + D + '{msg}</div></div>' + B + ';const target=aid||document.getElementById("chat-target").value;const res=await fetch("/api/chat",{method:"POST",body:JSON.stringify({message:msg,target_agent_id:target})});const d=await res.json();ms.innerHTML+=' + B + '<div class="d-flex flex-column mb-3 me-5"><div class="glass-card p-4 shadow-sm border-0"><div class="small fw-medium mb-4">' + D + '{marked.parse(d.response)}</div><div style="font-size:0.55rem; font-weight:800; opacity:0.5; text-transform:uppercase;">' + D + '{d.model} | ' + D + '{d.timestamp}</div></div></div>' + B + ';ms.scrollTop=ms.scrollHeight; const match=d.response.match(/\\[ROUTE:\\s*(.+?)\\]/i); if(match && match[1]){setTimeout(()=>sendChat("Lệnh tự động chuyển tiếp từ Sếp xuống cho cấp dưới: " + msg, match[1].trim()), 1500);}}',
+        'function renderChatHistory(){const ms=document.getElementById("chat-messages");if(!data.chat_history)return;ms.innerHTML=data.chat_history.map(c=>' + B + '<div class="d-flex justify-content-end mb-2 ms-5 text-end"><div class="bg-primary text-white p-3 rounded-4 small shadow-sm">' + D + '{c.message}</div></div><div class="d-flex flex-column mb-3 me-5"><div class="glass-card p-4 shadow-sm border-0"><div class="small fw-medium mb-4">' + D + '{marked.parse(c.response)}</div><div class="tiny opacity-50 uppercase">' + D + '{c.agent_id} | ' + D + '{c.source}</div></div></div>' + B + ').join("");ms.scrollTop=ms.scrollHeight;}',
+        'init();</script></body></html>'
+    ];
+    return parts.join('');
+}
