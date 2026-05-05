@@ -6,7 +6,7 @@
 
 ---
 
-## 1. THE DNA LAYER: iZcore (The Kernel)
+## 1. THE DNA LAYER: iZCore (The Kernel)
 The ultra-lightweight core written in **Rust**, acting as the "genetic code" embedded in every device.
 - **Hardware Fingerprinting**: Hashing algorithms for device identification based on CPU ID, MAC Address, and Disk Serial.
 - **Self-Bootstrap**: Minimalist scripts connecting to `boss.iz.life` to determine environment and download installation packages.
@@ -55,7 +55,7 @@ Utilizing **IACS (Inter-Assistant Communication Schema)**:
 ## 7. PROJECT STRUCTURE
 ```text
 /
-├── /dna_izcore (Rust)             # Identity, P2P, OTA Kernel
+├── /dna_iZCore (Rust)             # Identity, P2P, OTA Kernel
 ├── /cloud_platform (TS)           # Cloudflare Deployment (Workers/D1)
 ├── /executive_layer (Rust)        # BA (Brain), AO (Action), HR Manager
 ├── /departments                   # Autonomous Departments (Rust/Wasm)
@@ -72,7 +72,7 @@ Utilizing **IACS (Inter-Assistant Communication Schema)**:
 
 ## 8. QUICK START
 
-### ⚡ iZcore Quick Install (Every Device)
+### ⚡ iZCore Quick Install (Every Device)
 Use a single URL for all platforms. The system automatically serves the correct script (Bash for Unix/Mac or PowerShell for Windows):
 
 **Source 1: Via System Domain (Recommended)**
@@ -86,8 +86,8 @@ Use a single URL for all platforms. The system automatically serves the correct 
   ```
 
 **Source 2: Direct from GitHub (Fallback/Absolute Trust)**
-- **Unix-like**: `curl -fsSL https://raw.githubusercontent.com/iZFxTrade/izboss/main/dna_izcore/install.sh | sh`
-- **Windows**: `irm https://raw.githubusercontent.com/iZFxTrade/izboss/main/dna_izcore/install.ps1 | iex`
+- **Unix-like**: `curl -fsSL https://raw.githubusercontent.com/iZFxTrade/iZBoss/main/dna_iZCore/install.sh | sh`
+- **Windows**: `irm https://raw.githubusercontent.com/iZFxTrade/iZBoss/main/dna_iZCore/install.ps1 | iex`
 
 > **Note**: The current installer prioritizes fetching directly from the GitHub project. The `boss.iz.life` system is being developed into a decentralized storage network (similar to BitTorrent).
 

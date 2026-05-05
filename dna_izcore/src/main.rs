@@ -11,7 +11,7 @@ const HEARTBEAT_INTERVAL_SECS: u64 = 30;
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
     println!("╔══════════════════════════════════════════════╗");
-    println!("║     iZ.Life BOSS — iZcore DNA Kernel         ║");
+    println!("║     iZ.Life BOSS — iZCore DNA Kernel         ║");
     println!("║          Autonomous Entity Awakening         ║");
     println!("╚══════════════════════════════════════════════╝\n");
 

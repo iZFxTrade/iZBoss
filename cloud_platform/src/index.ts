@@ -4,7 +4,7 @@
  *
  * Routes:
  *   GET  /                      → Dashboard HTML
- *   GET  /install               → iZcore universal install script
+ *   GET  /install               → iZCore universal install script
  *   GET  /api/data              → Full system data (nodes, agents, depts...)
  *   POST /api/register          → Node self-registration
  *   POST /api/heartbeat         → Node heartbeat / keep-alive
@@ -59,30 +59,30 @@ export default {
 };
 
 // ────────────────────────────────────────────────────────────
-// /install — Serve universal iZcore installer script
+// /install — Serve universal iZCore installer script
 // ────────────────────────────────────────────────────────────
 // ────────────────────────────────────────────────────────────
-// /install — Serve universal iZcore installer script
+// /install — Serve universal iZCore installer script
 // ────────────────────────────────────────────────────────────
 // ────────────────────────────────────────────────────────────
-// /install — Serve universal iZcore installer (Bash or PowerShell)
+// /install — Serve universal iZCore installer (Bash or PowerShell)
 // ────────────────────────────────────────────────────────────
 function handleInstallScript(request: Request): Response {
     const ua = request.headers.get('user-agent') || '';
     const isWindows = ua.includes('Windows') || ua.includes('PowerShell') || ua.includes('MSIE');
 
     if (isWindows) {
-        const psScript = `# iZ.Life BOSS — iZcore Windows Installer
+        const psScript = `# iZ.Life BOSS — iZCore Windows Installer
 $ErrorActionPreference = 'Stop'
-$BOSS_API = "https://boss.iz.life"; $GITHUB_REPO = "iZFxTrade/izboss"
-$INSTALL_DIR = "$env:USERPROFILE\\bin"; $BINARY_NAME = "izcore.exe"
-Write-Host "[iZcore] Detecting Windows device..." -ForegroundColor Cyan
+$BOSS_API = "https://boss.iz.life"; $GITHUB_REPO = "iZFxTrade/iZBoss"
+$INSTALL_DIR = "$env:USERPROFILE\\bin"; $BINARY_NAME = "iZCore.exe"
+Write-Host "[iZCore] Detecting Windows device..." -ForegroundColor Cyan
 try { $REL = Invoke-RestMethod -Uri "https://api.github.com/repos/$GITHUB_REPO/releases/latest"; $VER = $REL.tag_name } catch { $VER = "v0.1.1" }
 $PLAT = "windows-x86_64"
 $MAC = Get-CimInstance Win32_NetworkAdapterConfiguration | Where-Object { $_.IPEnabled -eq $true } | Select-Object -First 1 -ExpandProperty MACAddress
 $DEVICE_ID = "iznode-" + ([System.BitConverter]::ToString([System.Security.Cryptography.SHA256]::Create().ComputeHash([System.Text.Encoding]::UTF8.GetBytes("$MAC-$env:COMPUTERNAME"))).Replace("-", "").ToLower().Substring(0, 16))
 ok "Device ID: $DEVICE_ID"
-$URL = "https://github.com/$GITHUB_REPO/releases/download/$VER/izcore-$PLAT.exe"
+$URL = "https://github.com/$GITHUB_REPO/releases/download/$VER/iZCore-$PLAT.exe"
 if (-not (Test-Path $INSTALL_DIR)) { New-Item -Path $INSTALL_DIR -ItemType Directory | Out-Null }
 log "Downloading binary from GitHub..."
 Invoke-WebRequest -Uri $URL -OutFile "$INSTALL_DIR\\$BINARY_NAME"
@@ -91,17 +91,17 @@ log "Registering..."
 $P = @{ device_id=$DEVICE_ID; platform=$PLAT; hostname=$env:COMPUTERNAME; version=$VER } | ConvertTo-Json
 Invoke-RestMethod -Uri "$BOSS_API/api/register" -Method Post -Body $P -ContentType "application/json" | Out-Null
 Start-Process -FilePath "$INSTALL_DIR\\$BINARY_NAME" -WindowStyle Hidden
-Write-Host "[✓] iZcore installed! Run: izcore --status" -ForegroundColor Green
+Write-Host "[✓] iZCore installed! Run: iZCore --status" -ForegroundColor Green
 `;
         return new Response(psScript, { headers: { 'Content-Type': 'text/plain; charset=utf-8' } });
     }
 
     const bashScript = `#!/bin/sh
-# iZ.Life BOSS — iZcore Universal Installer (Bash)
+# iZ.Life BOSS — iZCore Universal Installer (Bash)
 set -e
-BOSS_API="https://boss.iz.life"; GITHUB_REPO="iZFxTrade/izboss"
+BOSS_API="https://boss.iz.life"; GITHUB_REPO="iZFxTrade/iZBoss"
 RED='\\033[0;31m'; GREEN='\\033[0;32m'; YELLOW='\\033[1;33m'; CYAN='\\033[0;36m'; BOLD='\\033[1m'; NC='\\033[0m'
-log() { printf "\${CYAN}[iZcore]\${NC} %s\\n" "$1"; }
+log() { printf "\${CYAN}[iZCore]\${NC} %s\\n" "$1"; }
 ok() { printf "\${GREEN}[✓]\${NC} %s\\n" "$1"; }
 VERSION=$(curl -s https://api.github.com/repos/\${GITHUB_REPO}/releases/latest | grep '"tag_name":' | sed -E 's/.*"([^"]+)".*/\\1/')
 [ -z "\${VERSION}" ] && VERSION="v0.1.1"
@@ -109,14 +109,14 @@ OS=$(uname -s | tr '[:upper:]' '[:lower:]'); ARCH=$(uname -m)
 case "$ARCH" in x86_64) A="x86_64" ;; aarch64|arm64) A="aarch64" ;; *) A="armv7" ;; esac
 case "$OS" in linux) O="linux" ;; darwin) O="macos" ;; *) O="android" ;; esac
 P="\${O}-\${A}"; ok "Device: \${P} (\${VERSION})"
-URL="https://github.com/\${GITHUB_REPO}/releases/download/\${VERSION}/izcore-\${P}"
-curl -fsSL -o /tmp/izcore "\${URL}" || curl -fsSL -o /tmp/izcore "\${BOSS_API}/api/ota/download?platform=\${P}"
-chmod +x /tmp/izcore; sudo mv /tmp/izcore /usr/local/bin/izcore 2>/dev/null || mv /tmp/izcore "\$HOME/bin/izcore"
+URL="https://github.com/\${GITHUB_REPO}/releases/download/\${VERSION}/iZCore-\${P}"
+curl -fsSL -o /tmp/iZCore "\${URL}" || curl -fsSL -o /tmp/iZCore "\${BOSS_API}/api/ota/download?platform=\${P}"
+chmod +x /tmp/iZCore; sudo mv /tmp/iZCore /usr/local/bin/iZCore 2>/dev/null || mv /tmp/iZCore "\$HOME/bin/iZCore"
 MAC=$(ip link 2>/dev/null | grep "link/ether" | head -1 | awk '{print $2}' || ifconfig 2>/dev/null | grep "ether" | head -1 | awk '{print $2}' || echo "00:00")
 DEVICE_ID="iznode-$(printf "%s" "\$MAC" | sha256sum | cut -c1-16)"
 curl -s -X POST "\${BOSS_API}/api/register" -H "Content-Type: application/json" -d "{\\"device_id\\":\\"\${DEVICE_ID}\\",\\"platform\\":\\"\${P}\\",\\"version\\":\\"\${VERSION}\\"}" >/dev/null 2>&1
-izcore &
-ok "iZcore installed! Run: izcore --status"
+iZCore &
+ok "iZCore installed! Run: iZCore --status"
 `;
     return new Response(bashScript, { headers: { 'Content-Type': 'text/plain; charset=utf-8' } });
 }
@@ -272,12 +272,12 @@ function renderDashboard(): string {
         '<a href="#" class="nav-link"><i class="fas fa-robot me-3"></i><span>Workforce</span></a>',
         '<a href="#" class="nav-link"><i class="fas fa-brain me-3"></i><span>LLM Matrix</span></a>',
         '<a href="#" class="nav-link"><i class="fas fa-sitemap me-3"></i><span>Departments</span></a>',
-        '<a href="#" class="nav-link"><i class="fas fa-terminal me-3"></i><span>Install iZcore</span></a>',
+        '<a href="#" class="nav-link"><i class="fas fa-terminal me-3"></i><span>Install iZCore</span></a>',
         '</nav></div>',
         '<main id="main" style="margin-left:var(--side-w);"><header class="navbar-boss px-4 d-flex align-items-center"><div class="logo-center">iZ.BOSS<div style="font-size:0.5rem;font-weight:950;letter-spacing:3px;margin-top:-5px;opacity:0.8;">SOVEREIGN MATRIX V25.5</div></div></header>',
         '<div class="container-fluid p-5">',
         '<div class="row g-4 mb-5" id="dash-sum"></div>',
-        '<div class="row g-4 mb-4"><div class="col-12"><div class="glass-card p-4"><h6 class="tiny fw-black mb-3 text-primary"><i class="fas fa-terminal me-2"></i>Install iZcore — One Command</h6>',
+        '<div class="row g-4 mb-4"><div class="col-12"><div class="glass-card p-4"><h6 class="tiny fw-black mb-3 text-primary"><i class="fas fa-terminal me-2"></i>Install iZCore — One Command</h6>',
         '<div class="install-box text-primary">curl -fsSL https://boss.iz.life/install | sh</div>',
         '<div class="tiny opacity-50 mt-2">Tự động nhận diện thiết bị → tải binary → đăng ký → gia nhập mạng lưới</div></div></div></div>',
         '<div class="row g-4"><div class="col-lg-8"><div class="glass-card p-4"><h6 class="tiny fw-black mb-4 text-primary">Active Workforce Matrix</h6><div id="dash-agents" class="row g-3"></div></div></div>',

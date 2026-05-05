@@ -1,7 +1,7 @@
 # 📦 distributors — OTA Binary Storage
 
 ## Chức năng
-Kho chứa các file thực thi (binary) đã được compile sẵn cho từng nền tảng — dùng để phân phối qua cơ chế **OTA (Over-The-Air Update)**. Khi `dna_izcore` nhận tín hiệu cập nhật từ Cloudflare R2, nó sẽ tải binary tương ứng từ kho này về và tự cài đặt.
+Kho chứa các file thực thi (binary) đã được compile sẵn cho từng nền tảng — dùng để phân phối qua cơ chế **OTA (Over-The-Air Update)**. Khi `dna_iZCore` nhận tín hiệu cập nhật từ Cloudflare R2, nó sẽ tải binary tương ứng từ kho này về và tự cài đặt.
 
 ## Cấu trúc
 ```
@@ -16,14 +16,14 @@ distributors/
 ## Quy trình OTA
 ```
 1. Developer build binary mới
-   └─ cargo build -p dna_izcore --release --target <platform>
+   └─ cargo build -p dna_iZCore --release --target <platform>
 
 2. Upload lên Cloudflare R2
-   └─ wrangler r2 object put boss-ota/<version>/<platform>/dna_izcore <binary>
+   └─ wrangler r2 object put boss-ota/<version>/<platform>/dna_iZCore <binary>
 
 3. Cập nhật manifest version trên boss.iz.life/api/ota/latest
 
-4. dna_izcore trên các thiết bị poll mỗi 60 giây
+4. dna_iZCore trên các thiết bị poll mỗi 60 giây
    └─ Phát hiện version mới → tải về → verify SHA256 → restart
 ```
 
@@ -41,9 +41,9 @@ distributors/
 cargo install cross
 
 # Build cho từng platform
-cross build -p dna_izcore --release --target aarch64-apple-darwin
-cross build -p dna_izcore --release --target x86_64-pc-windows-msvc
-cross build -p dna_izcore --release --target aarch64-linux-android
+cross build -p dna_iZCore --release --target aarch64-apple-darwin
+cross build -p dna_iZCore --release --target x86_64-pc-windows-msvc
+cross build -p dna_iZCore --release --target aarch64-linux-android
 ```
 
 > ⚠️ **Lưu ý bảo mật**: Không commit binary files lên Git. Chỉ upload lên Cloudflare R2 qua wrangler CLI.

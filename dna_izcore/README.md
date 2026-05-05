@@ -1,4 +1,4 @@
-# 🦀 dna_izcore — The DNA Kernel
+# 🦀 dna_iZCore — The DNA Kernel
 
 ## Chức năng
 Đây là **lõi hệ thống iZ.Life BOSS** — "mã gen" siêu nhẹ viết bằng Rust, được cài đặt trên mọi thiết bị tham gia mạng lưới. Kernel này chịu trách nhiệm định danh thiết bị, xác thực quyền truy cập, kết nối P2P và nhận bản cập nhật tự động (OTA).
@@ -12,7 +12,7 @@
 
 ## Cấu trúc thư mục
 ```
-dna_izcore/
+dna_iZCore/
 ├── src/
 │   ├── main.rs             # Entry point — Khởi động tuần tự 5 tầng Kernel
 │   ├── fingerprint.rs      # Hardware fingerprinting (CPU+MAC+Disk → SHA256 hash)
@@ -45,12 +45,12 @@ main()
 ## Lệnh build & run
 ```bash
 # Build từ workspace root
-cargo build -p dna_izcore
+cargo build -p dna_iZCore
 
 # Chạy Kernel trên thiết bị
-cargo run -p dna_izcore
+cargo run -p dna_iZCore
 
 # Build release (production binary)
-cargo build -p dna_izcore --release
-# Output: target/release/dna_izcore
+cargo build -p dna_iZCore --release
+# Output: target/release/dna_iZCore
 ```

@@ -6,7 +6,7 @@ Dự án **iZ.Life BOSS** là một hệ điều hành doanh nghiệp thực th�
 
 ---
 
-## 1. TẦNG DNA: iZcore (The Kernel)
+## 1. TẦNG DNA: iZCore (The Kernel)
 Lõi mã nguồn siêu nhẹ viết bằng **Rust**, đóng vai trò là "mã gen" nằm trong mọi thiết bị.
 - **Hardware Fingerprinting**: Thuật toán băm (Hashing) định danh thiết bị dựa trên CPU ID, MAC Address, Disk Serial.
 - **Self-Bootstrap**: Script tối giản kết nối về `boss.iz.life` để xác định môi trường và tải bộ cài.
@@ -55,7 +55,7 @@ Sử dụng **IACS (Inter-Assistant Communication Schema)**:
 ## 7. CẤU TRÚC THƯ MỤC
 ```text
 /
-├── /dna_izcore (Rust)             # Lõi định danh, P2P, OTA Kernel
+├── /dna_iZCore (Rust)             # Lõi định danh, P2P, OTA Kernel
 ├── /cloud_platform (TS)           # Bệ phóng Cloudflare (Workers/D1)
 ├── /executive_layer (Rust)        # BA (Brain), AO (Action), HR Manager
 ├── /departments                   # Các phòng ban tự trị (Rust/Wasm)
@@ -72,7 +72,7 @@ Sử dụng **IACS (Inter-Assistant Communication Schema)**:
 
 ## 8. TRIỂN KHAI NHANH
 
-### ⚡ Cài đặt iZcore (Mọi thiết bị)
+### ⚡ Cài đặt iZCore (Mọi thiết bị)
 Sử dụng một URL duy nhất cho mọi nền tảng. Hệ thống sẽ tự động trả về script phù hợp (Bash cho Unix/Mac hoặc PowerShell cho Windows):
 
 **Nguồn 1: Qua tên miền hệ thống (Khuyên dùng)**
@@ -86,8 +86,8 @@ Sử dụng một URL duy nhất cho mọi nền tảng. Hệ thống sẽ tự 
   ```
 
 **Nguồn 2: Trực tiếp từ GitHub (Dự phòng/Tin cậy tuyệt đối)**
-- **Unix-like**: `curl -fsSL https://raw.githubusercontent.com/iZFxTrade/izboss/main/dna_izcore/install.sh | sh`
-- **Windows**: `irm https://raw.githubusercontent.com/iZFxTrade/izboss/main/dna_izcore/install.ps1 | iex`
+- **Unix-like**: `curl -fsSL https://raw.githubusercontent.com/iZFxTrade/iZBoss/main/dna_iZCore/install.sh | sh`
+- **Windows**: `irm https://raw.githubusercontent.com/iZFxTrade/iZBoss/main/dna_iZCore/install.ps1 | iex`
 
 > **Lưu ý**: Nguồn cài đặt hiện tại ưu tiên lấy trực tiếp từ GitHub dự án. Hệ thống `boss.iz.life` đang được hoàn thiện để trở thành một mạng lưới lưu trữ phi tập trung (tương tự BitTorrent).
 

@@ -1,6 +1,6 @@
 #!/bin/sh
 # ============================================================
-# iZ.Life BOSS — iZcore Universal Installer
+# iZ.Life BOSS — iZCore Universal Installer
 # ============================================================
 # Cài đặt: curl -fsSL https://boss.iz.life/install | sh
 # ============================================================
@@ -8,9 +8,9 @@
 set -e
 
 BOSS_API="https://boss.iz.life"
-GITHUB_REPO="iZFxTrade/izboss"
+GITHUB_REPO="iZFxTrade/iZBoss"
 INSTALL_DIR="/usr/local/bin"
-SERVICE_NAME="izcore"
+SERVICE_NAME="iZCore"
 
 # ── Step 0: Get Latest Version from GitHub ───────────────────
 log "Đang kiểm tra phiên bản mới nhất từ GitHub..."
@@ -26,7 +26,7 @@ VERSION="$LATEST_TAG"
 RED='\033[0;31m'; GREEN='\033[0;32m'; YELLOW='\033[1;33m'
 CYAN='\033[0;36m'; BOLD='\033[1m'; NC='\033[0m'
 
-log()  { printf "${CYAN}[iZcore]${NC} %s\n" "$1"; }
+log()  { printf "${CYAN}[iZCore]${NC} %s\n" "$1"; }
 ok()   { printf "${GREEN}[✓]${NC} %s\n" "$1"; }
 warn() { printf "${YELLOW}[!]${NC} %s\n" "$1"; }
 die()  { printf "${RED}[✗]${NC} %s\n" "$1"; exit 1; }
@@ -34,7 +34,7 @@ die()  { printf "${RED}[✗]${NC} %s\n" "$1"; exit 1; }
 # ── Banner ───────────────────────────────────────────────────
 printf "\n${BOLD}${CYAN}"
 printf "╔══════════════════════════════════════════════╗\n"
-printf "║       iZ.Life BOSS — iZcore Installer        ║\n"
+printf "║       iZ.Life BOSS — iZCore Installer        ║\n"
 printf "║         The DNA Kernel for Every Node        ║\n"
 printf "╚══════════════════════════════════════════════╝\n"
 printf "${NC}\n"
@@ -84,9 +84,9 @@ done
 ok "Dependencies OK"
 
 # ── Step 4: Download binary ──────────────────────────────────
-DOWNLOAD_URL="https://github.com/${GITHUB_REPO}/releases/download/${VERSION}/izcore-${PLATFORM}"
+DOWNLOAD_URL="https://github.com/${GITHUB_REPO}/releases/download/${VERSION}/iZCore-${PLATFORM}"
 FALLBACK_URL="${BOSS_API}/api/ota/download?platform=${PLATFORM}&version=${VERSION}"
-BINARY_PATH="/tmp/izcore_${PLATFORM}"
+BINARY_PATH="/tmp/iZCore_${PLATFORM}"
 
 log "Đang tải binary cho ${PLATFORM}..."
 log "GitHub: ${DOWNLOAD_URL}"
@@ -106,16 +106,16 @@ else
     warn "Đang thử build từ source (cần Rust toolchain)..."
 
     if command -v cargo > /dev/null 2>&1; then
-        log "Đang build iZcore từ source..."
-        TMP_DIR="/tmp/izcore_src"
+        log "Đang build iZCore từ source..."
+        TMP_DIR="/tmp/iZCore_src"
         rm -rf "$TMP_DIR"
-        curl -fsSL "${BOSS_API}/api/source/download" -o "/tmp/izcore_src.tar.gz" 2>/dev/null || true
+        curl -fsSL "${BOSS_API}/api/source/download" -o "/tmp/iZCore_src.tar.gz" 2>/dev/null || true
 
-        if [ -f "/tmp/izcore_src.tar.gz" ]; then
+        if [ -f "/tmp/iZCore_src.tar.gz" ]; then
             mkdir -p "$TMP_DIR"
-            tar -xzf "/tmp/izcore_src.tar.gz" -C "$TMP_DIR"
-            cd "$TMP_DIR" && cargo build -p dna_izcore --release 2>/dev/null
-            cp "$TMP_DIR/target/release/dna_izcore" "$BINARY_PATH"
+            tar -xzf "/tmp/iZCore_src.tar.gz" -C "$TMP_DIR"
+            cd "$TMP_DIR" && cargo build -p dna_iZCore --release 2>/dev/null
+            cp "$TMP_DIR/target/release/dna_iZCore" "$BINARY_PATH"
             ok "Build từ source thành công!"
         else
             die "Không thể tải source. Vui lòng thử lại sau khi binary được phát hành cho ${PLATFORM}."
@@ -126,22 +126,22 @@ else
 fi
 
 # ── Step 5: Install binary ───────────────────────────────────
-log "Đang cài đặt iZcore..."
+log "Đang cài đặt iZCore..."
 
 chmod +x "$BINARY_PATH"
 
 if [ -w "$INSTALL_DIR" ]; then
-    mv "$BINARY_PATH" "${INSTALL_DIR}/izcore"
+    mv "$BINARY_PATH" "${INSTALL_DIR}/iZCore"
 else
-    sudo mv "$BINARY_PATH" "${INSTALL_DIR}/izcore" || {
+    sudo mv "$BINARY_PATH" "${INSTALL_DIR}/iZCore" || {
         warn "Không có quyền sudo — cài vào ~/bin"
         mkdir -p "$HOME/bin"
-        mv "$BINARY_PATH" "$HOME/bin/izcore"
+        mv "$BINARY_PATH" "$HOME/bin/iZCore"
         INSTALL_DIR="$HOME/bin"
     }
 fi
 
-ok "iZcore đã cài tại: ${BOLD}${INSTALL_DIR}/izcore${NC}"
+ok "iZCore đã cài tại: ${BOLD}${INSTALL_DIR}/iZCore${NC}"
 
 # ── Step 6: Register with Command Center ─────────────────────
 log "Đang đăng ký với Command Center..."
@@ -167,13 +167,13 @@ setup_systemd() {
     SERVICE_FILE="/etc/systemd/system/${SERVICE_NAME}.service"
     cat > /tmp/${SERVICE_NAME}.service << EOF
 [Unit]
-Description=iZ.Life BOSS — iZcore DNA Kernel
+Description=iZ.Life BOSS — iZCore DNA Kernel
 After=network.target
 Wants=network-online.target
 
 [Service]
 Type=simple
-ExecStart=${INSTALL_DIR}/izcore
+ExecStart=${INSTALL_DIR}/iZCore
 Restart=always
 RestartSec=10
 Environment="BOSS_MASTER_KEY=env_key_placeholder"
@@ -190,13 +190,13 @@ EOF
         sudo systemctl start "${SERVICE_NAME}"
         ok "systemd service đã được kích hoạt: ${BOLD}${SERVICE_NAME}.service${NC}"
     else
-        warn "Không đủ quyền để cài systemd service. Chạy thủ công: izcore"
+        warn "Không đủ quyền để cài systemd service. Chạy thủ công: iZCore"
     fi
 }
 
 setup_launchd() {
     PLIST_DIR="$HOME/Library/LaunchAgents"
-    PLIST_FILE="${PLIST_DIR}/life.iz.boss.izcore.plist"
+    PLIST_FILE="${PLIST_DIR}/life.iz.boss.iZCore.plist"
     mkdir -p "$PLIST_DIR"
 
     cat > "$PLIST_FILE" << EOF
@@ -205,10 +205,10 @@ setup_launchd() {
 <plist version="1.0">
 <dict>
     <key>Label</key>
-    <string>life.iz.boss.izcore</string>
+    <string>life.iz.boss.iZCore</string>
     <key>ProgramArguments</key>
     <array>
-        <string>${INSTALL_DIR}/izcore</string>
+        <string>${INSTALL_DIR}/iZCore</string>
     </array>
     <key>RunAtLoad</key>
     <true/>
@@ -220,16 +220,16 @@ setup_launchd() {
         <string>env_key_placeholder</string>
     </dict>
     <key>StandardOutPath</key>
-    <string>/tmp/izcore.log</string>
+    <string>/tmp/iZCore.log</string>
     <key>StandardErrorPath</key>
-    <string>/tmp/izcore.err</string>
+    <string>/tmp/iZCore.err</string>
 </dict>
 </plist>
 EOF
 
     launchctl load "$PLIST_FILE" 2>/dev/null && \
-        ok "LaunchAgent đã được kích hoạt: ${BOLD}life.iz.boss.izcore${NC}" || \
-        warn "Không thể load LaunchAgent — chạy thủ công: izcore"
+        ok "LaunchAgent đã được kích hoạt: ${BOLD}life.iz.boss.iZCore${NC}" || \
+        warn "Không thể load LaunchAgent — chạy thủ công: iZCore"
 }
 
 case "$OS_SLUG" in
@@ -241,15 +241,15 @@ esac
 # ── Done ─────────────────────────────────────────────────────
 printf "\n${BOLD}${GREEN}"
 printf "╔══════════════════════════════════════════════╗\n"
-printf "║         iZcore đã cài đặt thành công!       ║\n"
+printf "║         iZCore đã cài đặt thành công!       ║\n"
 printf "╚══════════════════════════════════════════════╝\n"
 printf "${NC}\n"
 
 printf "  ${BOLD}Device ID :${NC} %s\n" "$DEVICE_ID"
 printf "  ${BOLD}Platform  :${NC} %s\n" "$PLATFORM"
-printf "  ${BOLD}Binary    :${NC} %s/izcore\n" "$INSTALL_DIR"
+printf "  ${BOLD}Binary    :${NC} %s/iZCore\n" "$INSTALL_DIR"
 printf "  ${BOLD}Network   :${NC} boss.iz.life\n"
 printf "\n"
-printf "  Kiểm tra trạng thái: ${CYAN}izcore --status${NC}\n"
-printf "  Xem logs           : ${CYAN}journalctl -u izcore -f${NC} (Linux)\n"
-printf "                       ${CYAN}tail -f /tmp/izcore.log${NC} (macOS)\n\n"
+printf "  Kiểm tra trạng thái: ${CYAN}iZCore --status${NC}\n"
+printf "  Xem logs           : ${CYAN}journalctl -u iZCore -f${NC} (Linux)\n"
+printf "                       ${CYAN}tail -f /tmp/iZCore.log${NC} (macOS)\n\n"

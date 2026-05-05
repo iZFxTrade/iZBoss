@@ -1,6 +1,6 @@
 #!/bin/bash
 # ============================================================
-# iZcore Release Trigger Script
+# iZCore Release Trigger Script
 # Usage: ./release.sh v0.1.0
 # ============================================================
 
@@ -13,7 +13,7 @@ BOLD='\033[1m'; NC='\033[0m'
 
 echo -e "${CYAN}${BOLD}"
 echo "╔══════════════════════════════════════════╗"
-echo "║   iZcore Release Publisher               ║"
+echo "║   iZCore Release Publisher               ║"
 echo "╚══════════════════════════════════════════╝"
 echo -e "${NC}"
 echo -e "  Version: ${BOLD}${VERSION}${NC}"
@@ -60,7 +60,7 @@ echo -e "${GREEN}✓ Pushed to main${NC}"
 
 # Create and push tag
 echo -e "\n[3/4] Creating tag ${VERSION}..."
-git tag -a "${VERSION}" -m "iZcore ${VERSION} — DNA Kernel Release
+git tag -a "${VERSION}" -m "iZCore ${VERSION} — DNA Kernel Release
 
 Platforms: Windows x86_64 | macOS Apple Silicon | macOS Intel
            Linux x86_64 | Linux ARM64 | Android ARM64 | Android ARMv7
@@ -73,8 +73,8 @@ echo -e "${GREEN}✓ Tag ${VERSION} pushed — GitHub Actions build started!${NC
 
 # Show status
 echo -e "\n[4/4] Build triggered! Monitor progress:"
-echo -e "  ${CYAN}https://github.com/iZFxTrade/izboss/actions${NC}"
+echo -e "  ${CYAN}https://github.com/iZFxTrade/iZBoss/actions${NC}"
 echo -e "\n  Release will be available at:"
-echo -e "  ${CYAN}https://github.com/iZFxTrade/izboss/releases/tag/${VERSION}${NC}"
+echo -e "  ${CYAN}https://github.com/iZFxTrade/iZBoss/releases/tag/${VERSION}${NC}"
 echo ""
 echo -e "${GREEN}${BOLD}✓ Release ${VERSION} is on its way!${NC}"

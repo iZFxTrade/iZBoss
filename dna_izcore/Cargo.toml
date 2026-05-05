@@ -1,5 +1,5 @@
 [package]
-name = "dna_izcore"
+name = "dna_iZCore"
 description = "iZ.Life BOSS - The DNA Kernel"
 version.workspace = true
 edition.workspace = true

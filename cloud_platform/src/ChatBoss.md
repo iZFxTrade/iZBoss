@@ -128,7 +128,7 @@ Telegram Routes:
   └─ Direct authorization bypass for founder accounts
 
 Public Routes:
-  ├─ /install - iZcore bootstrap
+  ├─ /install - iZCore bootstrap
   └─ / - Dynamic dashboard render
 ```
 

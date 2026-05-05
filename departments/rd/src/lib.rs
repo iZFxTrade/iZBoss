@@ -18,7 +18,7 @@ pub struct RdReport {
     pub new_models_found: usize,
     pub top_candidate: Option<ModelCandidate>,
     pub recommendation: String,
-    pub iZcore_version: String,
+    pub iZCore_version: String,
 }
 
 pub struct RdAgent {
@@ -61,7 +61,7 @@ impl RdAgent {
             new_models_found: self.discovered_models.len(),
             top_candidate: top,
             recommendation,
-            iZcore_version: env!("CARGO_PKG_VERSION").to_string(),
+            iZCore_version: env!("CARGO_PKG_VERSION").to_string(),
         }
     }
 }

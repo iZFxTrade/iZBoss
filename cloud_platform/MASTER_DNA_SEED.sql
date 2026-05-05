@@ -51,7 +51,7 @@ INSERT INTO wallets (id, name, address, purpose, balance_mock) VALUES
 ('w-inv', '📈 Đầu tư (Investment)', '0x...invest', 'Tái đầu tư vào các dự án Trade/AI mới.', 'Active'),
 ('w-sav', '💰 Tích lũy (Accumulation)', '0x...sav', 'Quỹ dự phòng an toàn dài hạn.', 'Active'),
 ('w-boss', '👑 Ví Sếp Hưng', '0x...boss', 'Mục tiêu: 2,000$/tháng cho BOSS HƯNG.', 'Active'),
-('w-rnd', '🧬 Quỹ R&D', '0x...rnd', 'Phát triển iZcore, mua sắm linh kiện.', 'Active');
+('w-rnd', '🧬 Quỹ R&D', '0x...rnd', 'Phát triển iZCore, mua sắm linh kiện.', 'Active');
 
 -- 7. Skills & DNA Modules
 INSERT INTO skills_modules (id, name, type, status, description) VALUES 

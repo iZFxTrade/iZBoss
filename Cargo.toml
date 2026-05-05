@@ -1,7 +1,7 @@
 [workspace]
 resolver = "2"
 members = [
-    "dna_izcore",
+    "dna_iZCore",
     "executive_layer",
     "cli_gateway",
     "departments/finance",

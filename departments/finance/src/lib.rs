@@ -35,7 +35,7 @@ impl FinanceAgent {
                 Wallet { id: "w-inv".into(), name: "📈 Đầu tư".into(), purpose: "Tái đầu tư Trade/AI".into(), balance_usd: 0.0, status: "active".into() },
                 Wallet { id: "w-sav".into(), name: "💰 Tích lũy".into(), purpose: "Quỹ dự phòng".into(), balance_usd: 0.0, status: "active".into() },
                 Wallet { id: "w-boss".into(), name: "👑 Ví Sếp Hưng".into(), purpose: "2,000$/tháng".into(), balance_usd: 0.0, status: "active".into() },
-                Wallet { id: "w-rnd".into(), name: "🧬 Quỹ R&D".into(), purpose: "Phát triển iZcore".into(), balance_usd: 0.0, status: "active".into() },
+                Wallet { id: "w-rnd".into(), name: "🧬 Quỹ R&D".into(), purpose: "Phát triển iZCore".into(), balance_usd: 0.0, status: "active".into() },
             ],
         }
     }

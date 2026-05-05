@@ -1,4 +1,4 @@
-name: 🚀 iZcore Release Builder
+name: 🚀 iZCore Release Builder
 
 on:
   push:
@@ -9,9 +9,9 @@ on:
   workflow_dispatch:
     inputs:
       version:
-        description: 'Release version (e.g. v0.1.0)'
+        description: 'Release version (e.g. v0.1.2)'
         required: true
-        default: 'v0.1.0'
+        default: 'v0.1.2'
 
 env:
   CARGO_TERM_COLOR: always
@@ -32,37 +32,37 @@ jobs:
           - target: x86_64-unknown-linux-musl
             os_name: linux
             arch_name: x86_64
-            artifact: izcore-linux-x86_64
+            artifact: iZCore-linux-x86_64
 
           # Linux ARM64 (Raspberry Pi 4+, cloud ARM)
           - target: aarch64-unknown-linux-musl
             os_name: linux
             arch_name: aarch64
-            artifact: izcore-linux-aarch64
+            artifact: iZCore-linux-aarch64
 
           # Linux ARMv7 (Raspberry Pi 2/3, FPT Play Box)
           - target: armv7-unknown-linux-musleabihf
             os_name: embedded
             arch_name: armv7hf
-            artifact: izcore-embedded-armv7hf
+            artifact: iZCore-embedded-armv7hf
 
           # Windows x86_64
           - target: x86_64-pc-windows-gnu
             os_name: windows
             arch_name: x86_64
-            artifact: izcore-windows-x86_64.exe
+            artifact: iZCore-windows-x86_64.exe
 
           # Android ARM64 (Samsung Note 10+, modern phones)
           - target: aarch64-linux-android
             os_name: android
             arch_name: aarch64
-            artifact: izcore-android-aarch64
+            artifact: iZCore-android-aarch64
 
           # Android ARMv7 (Samsung Note 9, older phones)
           - target: armv7-linux-androideabi
             os_name: android
             arch_name: armv7
-            artifact: izcore-android-armv7
+            artifact: iZCore-android-armv7
 
     steps:
       - name: Checkout
@@ -121,12 +121,12 @@ jobs:
           - arch: aarch64
             os: macos-14
             target: aarch64-apple-darwin
-            artifact: izcore-macos-aarch64
+            artifact: iZCore-macos-aarch64
 
           - arch: x86_64
             os: macos-13
             target: x86_64-apple-darwin
-            artifact: izcore-macos-x86_64
+            artifact: iZCore-macos-x86_64
 
     steps:
       - name: Checkout
@@ -194,16 +194,16 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ steps.version.outputs.tag }}
-          name: "iZcore ${{ steps.version.outputs.tag }} — DNA Kernel"
+          name: "iZCore ${{ steps.version.outputs.tag }} — The DNA Kernel"
           draft: false
           prerelease: false
           body: |
-            # 🧬 iZcore ${{ steps.version.outputs.tag }} — The DNA Kernel
+            # 🧬 iZCore ${{ steps.version.outputs.tag }} — The DNA Kernel
 
-            **iZ.Life BOSS Autonomous Entity** — Cài đặt trên mọi thiết bị với một lệnh duy nhất.
+            **iZBoss Autonomous Entity** — Cài đặt trên mọi thiết bị với một lệnh duy nhất.
 
             ## ⚡ Quick Install (Every Device)
-            You can install iZcore on any device (Linux, macOS, Android, Embedded) using one of these commands:
+            You can install iZCore on any device (Linux, macOS, Android, Embedded) using one of these commands:
 
             **Option 1: Via System Domain (Recommended)**
             ```bash
@@ -211,28 +211,24 @@ jobs:
             ```
 
             **Option 2: Direct from GitHub (Fallback/Absolute Trust)**
-            ```bash
-            curl -fsSL https://raw.githubusercontent.com/iZFxTrade/izboss/main/dna_izcore/install.sh | sh
-            ```
+            - Unix-like: `curl -fsSL https://raw.githubusercontent.com/iZFxTrade/iZBoss/main/dna_izcore/install.sh | sh`
+            - Windows: `irm https://raw.githubusercontent.com/iZFxTrade/iZBoss/main/dna_izcore/install.ps1 | iex`
 
             ## 📦 Tải thủ công theo nền tảng
 
             | Nền tảng | File | Ghi chú |
             |---|---|---|
-            | 🪟 Windows x86_64 | `izcore-windows-x86_64.exe` | Chạy trực tiếp |
-            | 🍎 macOS Apple Silicon | `izcore-macos-aarch64` | Mac Mini M4, MacBook M1/M2/M3 |
-            | 🍎 macOS Intel | `izcore-macos-x86_64` | MacBook Intel |
-            | 🐧 Linux x86_64 | `izcore-linux-x86_64` | VPS/Server Ubuntu/Debian |
-            | 🐧 Linux ARM64 | `izcore-linux-aarch64` | Raspberry Pi 4+, Cloud ARM |
-            | 🤖 Android ARM64 | `izcore-android-aarch64` | Samsung Note 10+, modern phones |
-            | 🤖 Android ARMv7 | `izcore-android-armv7` | Samsung Note 9, older phones |
-            | 📡 Embedded ARMv7hf | `izcore-embedded-armv7hf` | FPT Play Box, Raspberry Pi 2/3 |
+            | 🪟 Windows x86_64 | `iZCore-windows-x86_64.exe` | Chạy trực tiếp |
+            | 🍎 macOS Apple Silicon | `iZCore-macos-aarch64` | Mac Mini M4, MacBook M1/M2/M3 |
+            | 🍎 macOS Intel | `iZCore-macos-x86_64` | MacBook Intel |
+            | 🐧 Linux x86_64 | `iZCore-linux-x86_64` | VPS/Server Ubuntu/Debian |
+            | 🐧 Linux ARM64 | `iZCore-linux-aarch64` | Raspberry Pi 4+, Cloud ARM |
+            | 🤖 Android ARM64 | `iZCore-android-aarch64` | Samsung Note 10+, modern phones |
+            | 🤖 Android ARMv7 | `iZCore-android-armv7` | Samsung Note 9, older phones |
+            | 📡 Embedded ARMv7hf | `iZCore-embedded-armv7hf` | FPT Play Box, Raspberry Pi 2/3 |
 
             ## 🔐 Xác minh SHA256
             ```bash
-            sha256sum -c izcore-<platform>.sha256
-            ```
-
             ## 🚀 Chạy sau khi tải
             ```bash
             chmod +x izcore-*

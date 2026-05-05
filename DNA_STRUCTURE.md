@@ -8,7 +8,7 @@ Sidebar KHÔNG được chứa Logo (Logo dời lên Header). Danh sách Menu ph
 2.  **Nodes Fleet**: Quản lý hạ tầng Node (Mac Mini, VPS, Mobile...).
 3.  **Workforce**: Quản lý Agent (BA, AO, Leader, Sub-agents).
 4.  **LLM Matrix**: Danh mục Model (Cloudflare, Gemini, NVIDIA, OpenRouter).
-5.  **Skills**: Các kỹ năng cốt lõi của iZcore.
+5.  **Skills**: Các kỹ năng cốt lõi của iZCore.
 6.  **Modules**: Thư viện DNA mở rộng.
 7.  **Oanda Price**: Hook cập nhật giá từ Oanda.
 8.  **Hub News**: Feed tin tức từ hub.iz.life/news.

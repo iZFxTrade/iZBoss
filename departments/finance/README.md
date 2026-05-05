@@ -25,6 +25,6 @@ departments/finance/
 - `w-inv` 📈 **Đầu tư** — Tái đầu tư vào Trade/AI
 - `w-sav` 💰 **Tích lũy** — Quỹ dự phòng dài hạn
 - `w-boss` 👑 **Ví Sếp Hưng** — Mục tiêu: 2,000$/tháng
-- `w-rnd` 🧬 **Quỹ R&D** — Phát triển iZcore & model
+- `w-rnd` 🧬 **Quỹ R&D** — Phát triển iZCore & model
 
 ## Node: `vps-win` (VPS Windows — Xeon Gold)

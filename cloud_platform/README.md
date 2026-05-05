@@ -44,7 +44,7 @@ cloud_platform/
 |---|---|---|
 | `/` | GET | Dashboard HTML (Sovereign Matrix UI) |
 | `/api/data` | GET | Trả về toàn bộ data: nodes, agents, depts, models |
-| `/install` | GET | Bootstrap script cho iZcore Kernel |
+| `/install` | GET | Bootstrap script cho iZCore Kernel |
 | `/webhook/telegram` | POST | Nhận cập nhật từ Telegram Bot |
 
 ## Database (D1 Tables)
