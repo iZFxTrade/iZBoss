@@ -29,7 +29,7 @@ export default {
 
         // ── Route Table ──────────────────────────────────────
         if (path === '/install' && method === 'GET')
-            return handleInstallScript();
+            return handleInstallScript(request);
 
         if (path === '/api/data' && method === 'GET')
             return handleDataApi(env);
@@ -64,80 +64,61 @@ export default {
 // ────────────────────────────────────────────────────────────
 // /install — Serve universal iZcore installer script
 // ────────────────────────────────────────────────────────────
-function handleInstallScript(): Response {
-    const script = `#!/bin/sh
-# iZ.Life BOSS — iZcore Universal Installer (GitHub Source)
-# Usage: curl -fsSL https://boss.iz.life/install | sh
+// ────────────────────────────────────────────────────────────
+// /install — Serve universal iZcore installer (Bash or PowerShell)
+// ────────────────────────────────────────────────────────────
+function handleInstallScript(request: Request): Response {
+    const ua = request.headers.get('user-agent') || '';
+    const isWindows = ua.includes('Windows') || ua.includes('PowerShell') || ua.includes('MSIE');
 
+    if (isWindows) {
+        const psScript = `# iZ.Life BOSS — iZcore Windows Installer
+$ErrorActionPreference = 'Stop'
+$BOSS_API = "https://boss.iz.life"; $GITHUB_REPO = "iZFxTrade/izboss"
+$INSTALL_DIR = "$env:USERPROFILE\\bin"; $BINARY_NAME = "izcore.exe"
+Write-Host "[iZcore] Detecting Windows device..." -ForegroundColor Cyan
+try { $REL = Invoke-RestMethod -Uri "https://api.github.com/repos/$GITHUB_REPO/releases/latest"; $VER = $REL.tag_name } catch { $VER = "v0.1.1" }
+$PLAT = "windows-x86_64"
+$MAC = Get-CimInstance Win32_NetworkAdapterConfiguration | Where-Object { $_.IPEnabled -eq $true } | Select-Object -First 1 -ExpandProperty MACAddress
+$DEVICE_ID = "iznode-" + ([System.BitConverter]::ToString([System.Security.Cryptography.SHA256]::Create().ComputeHash([System.Text.Encoding]::UTF8.GetBytes("$MAC-$env:COMPUTERNAME"))).Replace("-", "").ToLower().Substring(0, 16))
+ok "Device ID: $DEVICE_ID"
+$URL = "https://github.com/$GITHUB_REPO/releases/download/$VER/izcore-$PLAT.exe"
+if (-not (Test-Path $INSTALL_DIR)) { New-Item -Path $INSTALL_DIR -ItemType Directory | Out-Null }
+log "Downloading binary from GitHub..."
+Invoke-WebRequest -Uri $URL -OutFile "$INSTALL_DIR\\$BINARY_NAME"
+if ($env:PATH -notlike "*$INSTALL_DIR*") { [Environment]::SetEnvironmentVariable("Path", [Environment]::GetEnvironmentVariable("Path", "User") + ";$INSTALL_DIR", "User") }
+log "Registering..."
+$P = @{ device_id=$DEVICE_ID; platform=$PLAT; hostname=$env:COMPUTERNAME; version=$VER } | ConvertTo-Json
+Invoke-RestMethod -Uri "$BOSS_API/api/register" -Method Post -Body $P -ContentType "application/json" | Out-Null
+Start-Process -FilePath "$INSTALL_DIR\\$BINARY_NAME" -WindowStyle Hidden
+Write-Host "[✓] iZcore installed! Run: izcore --status" -ForegroundColor Green
+`;
+        return new Response(psScript, { headers: { 'Content-Type': 'text/plain; charset=utf-8' } });
+    }
+
+    const bashScript = `#!/bin/sh
+# iZ.Life BOSS — iZcore Universal Installer (Bash)
 set -e
-BOSS_API="https://boss.iz.life"
-GITHUB_REPO="iZFxTrade/izboss"
-
-RED='\\033[0;31m'; GREEN='\\033[0;32m'; YELLOW='\\033[1;33m'
-CYAN='\\033[0;36m'; BOLD='\\033[1m'; NC='\\033[0m'
-
-log()  { printf "\${CYAN}[iZcore]\${NC} %s\\n" "$1"; }
-ok()   { printf "\${GREEN}[✓]\${NC} %s\\n" "$1"; }
-warn() { printf "\${YELLOW}[!]\${NC} %s\\n" "$1"; }
-die()  { printf "\${RED}[✗]\${NC} %s\\n" "$1"; exit 1; }
-
-printf "\\n\${BOLD}\${CYAN}"
-printf "╔══════════════════════════════════════════════╗\\n"
-printf "║       iZ.Life BOSS — iZcore Installer        ║\\n"
-printf "║         (Primary Source: GitHub)             ║\\n"
-printf "╚══════════════════════════════════════════════╝\\n"
-printf "\${NC}\\n"
-
-log "Đang kiểm tra phiên bản mới nhất từ GitHub..."
+BOSS_API="https://boss.iz.life"; GITHUB_REPO="iZFxTrade/izboss"
+RED='\\033[0;31m'; GREEN='\\033[0;32m'; YELLOW='\\033[1;33m'; CYAN='\\033[0;36m'; BOLD='\\033[1m'; NC='\\033[0m'
+log() { printf "\${CYAN}[iZcore]\${NC} %s\\n" "$1"; }
+ok() { printf "\${GREEN}[✓]\${NC} %s\\n" "$1"; }
 VERSION=$(curl -s https://api.github.com/repos/\${GITHUB_REPO}/releases/latest | grep '"tag_name":' | sed -E 's/.*"([^"]+)".*/\\1/')
 [ -z "\${VERSION}" ] && VERSION="v0.1.1"
-
-OS=$(uname -s | tr '[:upper:]' '[:lower:]')
-ARCH=$(uname -m)
-case "$ARCH" in x86_64) ARCH_SLUG="x86_64" ;; aarch64|arm64) ARCH_SLUG="aarch64" ;; armv7l) ARCH_SLUG="armv7" ;; *) die "Unsupported arch: $ARCH" ;; esac
-case "$OS" in linux) OS_SLUG="linux" ;; darwin) OS_SLUG="macos" ;; *) die "Unsupported OS: $OS" ;; esac
-PLATFORM="\${OS_SLUG}-\${ARCH_SLUG}"
-
-ok "Thiết bị: \${BOLD}\${OS_SLUG}\${NC} / \${BOLD}\${ARCH_SLUG}\${NC} (\${VERSION})"
-
-BINARY_URL="https://github.com/\${GITHUB_REPO}/releases/download/\${VERSION}/izcore-\${PLATFORM}"
-FALLBACK_URL="\${BOSS_API}/api/ota/download?platform=\${PLATFORM}&version=\${VERSION}"
-
-log "Đang tải binary từ GitHub..."
-HTTP_STATUS=$(curl -fsSL -w "%{http_code}" -o /tmp/izcore "\${BINARY_URL}" 2>/dev/null || echo "000")
-
-if [ "\$HTTP_STATUS" != "200" ]; then
-  warn "GitHub không khả dụng — Thử fallback về boss.iz.life..."
-  HTTP_STATUS=$(curl -fsSL -w "%{http_code}" -o /tmp/izcore "\${FALLBACK_URL}" 2>/dev/null || echo "000")
-fi
-
-if [ "\$HTTP_STATUS" = "200" ] && [ -s /tmp/izcore ]; then
-  chmod +x /tmp/izcore
-  sudo mv /tmp/izcore /usr/local/bin/izcore 2>/dev/null || mv /tmp/izcore "\$HOME/bin/izcore"
-  ok "iZcore đã được cài đặt thành công!"
-else
-  die "Không thể tải binary. Vui lòng kiểm tra kết nối mạng."
-fi
-
-log "Đang đăng ký node..."
-MAC=$(ip link 2>/dev/null | grep "link/ether" | head -1 | awk '{print $2}' || ifconfig 2>/dev/null | grep "ether" | head -1 | awk '{print $2}' || echo "00:00:00:00:00:00")
-DEVICE_ID="iznode-$(printf "%s_%s" "\$MAC" "$(hostname)" | sha256sum 2>/dev/null | cut -c1-16 || date +%s)"
-
-curl -s -X POST "\${BOSS_API}/api/register" -H "Content-Type: application/json" \\
-  -d "{\\"device_id\\":\\"\${DEVICE_ID}\\",\\"platform\\":\\"\${PLATFORM}\\",\\"hostname\\":\\"$(hostname)\\",\\"version\\":\\"\${VERSION}\\"}" >/dev/null 2>&1 && ok "Đã báo danh thành công!"
-
-log "Khởi chạy iZcore..."
+OS=$(uname -s | tr '[:upper:]' '[:lower:]'); ARCH=$(uname -m)
+case "$ARCH" in x86_64) A="x86_64" ;; aarch64|arm64) A="aarch64" ;; *) A="armv7" ;; esac
+case "$OS" in linux) O="linux" ;; darwin) O="macos" ;; *) O="android" ;; esac
+P="\${O}-\${A}"; ok "Device: \${P} (\${VERSION})"
+URL="https://github.com/\${GITHUB_REPO}/releases/download/\${VERSION}/izcore-\${P}"
+curl -fsSL -o /tmp/izcore "\${URL}" || curl -fsSL -o /tmp/izcore "\${BOSS_API}/api/ota/download?platform=\${P}"
+chmod +x /tmp/izcore; sudo mv /tmp/izcore /usr/local/bin/izcore 2>/dev/null || mv /tmp/izcore "\$HOME/bin/izcore"
+MAC=$(ip link 2>/dev/null | grep "link/ether" | head -1 | awk '{print $2}' || ifconfig 2>/dev/null | grep "ether" | head -1 | awk '{print $2}' || echo "00:00")
+DEVICE_ID="iznode-$(printf "%s" "\$MAC" | sha256sum | cut -c1-16)"
+curl -s -X POST "\${BOSS_API}/api/register" -H "Content-Type: application/json" -d "{\\"device_id\\":\\"\${DEVICE_ID}\\",\\"platform\\":\\"\${P}\\",\\"version\\":\\"\${VERSION}\\"}" >/dev/null 2>&1
 izcore &
-ok "iZcore đang chạy ngầm. Hệ thống BitTorrent-like P2P sẽ tự động được kích hoạt khi node ổn định."
-
-printf "\\n  \${BOLD}Kiểm tra:\${NC} izcore --status\\n\\n"`;
-
-    return new Response(script, {
-        headers: {
-            'Content-Type': 'text/plain; charset=utf-8',
-            'Cache-Control': 'no-cache',
-        }
-    });
+ok "iZcore installed! Run: izcore --status"
+`;
+    return new Response(bashScript, { headers: { 'Content-Type': 'text/plain; charset=utf-8' } });
 }
 
 // ────────────────────────────────────────────────────────────
