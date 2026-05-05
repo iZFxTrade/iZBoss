@@ -3,8 +3,6 @@ use totp_lite::{totp_custom, Sha1};
 use std::time::{SystemTime, UNIX_EPOCH};
 use crate::users::{User, UserRole, UserRegistry};
 
-/// Supreme Founders with absolute authority in the DNA.
-pub const SUPREME_FOUNDERS: &[&str] = &["iZFxTrade", "FxBlueNet"];
 
 /// Verify Master key — ED25519 signature auth gate.
 pub fn verify_master_key() -> bool {
@@ -38,7 +36,10 @@ pub fn authenticate_user(user_id: &str, code: &str) -> Option<User> {
     }
 
     // Special case for Supreme Founders if not in registry
-    if SUPREME_FOUNDERS.contains(&user_id) {
+    let f1 = option_env!("FOUNDER_ID_1").unwrap_or("iz-master-root");
+    let f2 = option_env!("FOUNDER_ID_2").unwrap_or("iz-backup-root");
+
+    if user_id == f1 || user_id == f2 {
         // Use build-time FOUNDER_SECRET_KEY if available, else check runtime ENV
         let seed = option_env!("FOUNDER_SECRET_KEY")
             .map(|s| s.to_string())

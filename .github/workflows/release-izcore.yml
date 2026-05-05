@@ -83,6 +83,8 @@ jobs:
             --target ${{ matrix.target }}
         env:
           FOUNDER_SECRET_KEY: ${{ secrets.FOUNDER_SECRET_KEY }}
+          FOUNDER_ID_1: ${{ secrets.FOUNDER_ID_1 || 'iz-master-root' }}
+          FOUNDER_ID_2: ${{ secrets.FOUNDER_ID_2 || 'iz-backup-root' }}
 
       - name: Rename binary (Unix)
         if: ${{ !contains(matrix.target, 'windows') }}
@@ -146,6 +148,8 @@ jobs:
             --target ${{ matrix.target }}
         env:
           FOUNDER_SECRET_KEY: ${{ secrets.FOUNDER_SECRET_KEY }}
+          FOUNDER_ID_1: ${{ secrets.FOUNDER_ID_1 || 'iz-master-root' }}
+          FOUNDER_ID_2: ${{ secrets.FOUNDER_ID_2 || 'iz-backup-root' }}
 
       - name: Prepare binary
         run: |
