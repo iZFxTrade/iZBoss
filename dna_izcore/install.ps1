@@ -2,7 +2,10 @@
 # iZ.Life BOSS — iZCore Windows Installer (PowerShell)
 # ============================================================
 # Usage: irm https://boss.iz.life/install | iex
+# Or: $USERNAME="user"; irm https://boss.iz.life/install | iex
 # ============================================================
+
+param([string]$Username = $env:IZ_USERNAME)
 
 $ErrorActionPreference = 'Stop'
 
@@ -77,6 +80,7 @@ $PAYLOAD = @{
     platform  = $PLATFORM
     hostname  = $HOST_NAME
     version   = $VERSION
+    username  = $Username
 } | ConvertTo-Json
 
 try {
@@ -88,7 +92,7 @@ try {
 
 # ── Step 6: Start ────────────────────────────────────────────
 Write-Host "[iZCore] Starting iZCore in background..." -ForegroundColor Cyan
-Start-Process -FilePath "$INSTALL_DIR\$BINARY_NAME" -WindowStyle Hidden
+Start-Process -FilePath "$INSTALL_DIR\$BINARY_NAME" -ArgumentList "--username `"$Username`"" -WindowStyle Hidden
 
 Write-Host ""
 Write-Host "╔══════════════════════════════════════════════╗" -ForegroundColor Green

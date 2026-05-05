@@ -3,7 +3,7 @@ use anyhow::Result;
 const REGISTER_ENDPOINT: &str = "https://boss.iz.life/api/register";
 
 /// Self-bootstrap: register this device with the Command Center.
-pub async fn connect_to_command_center(device_id: &str) -> Result<()> {
+pub async fn connect_to_command_center(device_id: &str, username: Option<&str>) -> Result<()> {
     println!("[Bootstrap] Đang kết nối về Command Center: {}", REGISTER_ENDPOINT);
 
     let client = reqwest::Client::builder()
@@ -15,6 +15,7 @@ pub async fn connect_to_command_center(device_id: &str) -> Result<()> {
         "version": env!("CARGO_PKG_VERSION"),
         "platform": std::env::consts::OS,
         "arch": std::env::consts::ARCH,
+        "username": username,
         "timestamp": chrono_ts()
     });
 

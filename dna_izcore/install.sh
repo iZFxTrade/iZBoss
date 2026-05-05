@@ -11,6 +11,15 @@ BOSS_API="https://boss.iz.life"
 GITHUB_REPO="iZFxTrade/iZBoss"
 INSTALL_DIR="/usr/local/bin"
 SERVICE_NAME="iZCore"
+USERNAME=""
+
+# Parse arguments
+while [ "$#" -gt 0 ]; do
+  case "$1" in
+    --username) USERNAME="$2"; shift 2 ;;
+    *) shift ;;
+  esac
+done
 
 # ── Step 0: Get Latest Version from GitHub ───────────────────
 log "Đang kiểm tra phiên bản mới nhất từ GitHub..."
@@ -146,8 +155,8 @@ ok "iZCore đã cài tại: ${BOLD}${INSTALL_DIR}/iZCore${NC}"
 # ── Step 6: Register with Command Center ─────────────────────
 log "Đang đăng ký với Command Center..."
 
-REG_PAYLOAD=$(printf '{"device_id":"%s","platform":"%s","hostname":"%s","version":"%s"}' \
-    "$DEVICE_ID" "$PLATFORM" "$HOSTNAME" "$VERSION")
+REG_PAYLOAD=$(printf '{"device_id":"%s","platform":"%s","hostname":"%s","version":"%s","username":"%s"}' \
+    "$DEVICE_ID" "$PLATFORM" "$HOSTNAME" "$VERSION" "$USERNAME")
 
 REG_STATUS=$(curl -s -o /dev/null -w "%{http_code}" \
     -X POST "${BOSS_API}/api/register" \
@@ -173,7 +182,7 @@ Wants=network-online.target
 
 [Service]
 Type=simple
-ExecStart=${INSTALL_DIR}/iZCore
+ExecStart=${INSTALL_DIR}/iZCore --username "${USERNAME}"
 Restart=always
 RestartSec=10
 Environment="BOSS_MASTER_KEY=env_key_placeholder"
@@ -209,6 +218,8 @@ setup_launchd() {
     <key>ProgramArguments</key>
     <array>
         <string>${INSTALL_DIR}/iZCore</string>
+        <string>--username</string>
+        <string>${USERNAME}</string>
     </array>
     <key>RunAtLoad</key>
     <true/>

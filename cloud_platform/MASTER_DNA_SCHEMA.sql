@@ -30,7 +30,20 @@ CREATE TABLE nodes (
     ram_usage INTEGER DEFAULT 0,
     storage_total INTEGER,
     storage_usage INTEGER DEFAULT 0,
-    last_heartbeat TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    owner_id TEXT, -- User ID who claims this node
+    last_heartbeat TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY(owner_id) REFERENCES users(id)
+);
+
+-- 2.1 Multi-User Authentication (RBAC)
+DROP TABLE IF EXISTS users;
+CREATE TABLE users (
+    id TEXT PRIMARY KEY, -- telegram_id or chosen username
+    name TEXT NOT NULL,
+    role TEXT DEFAULT 'user', -- root, admin, mod, user
+    secret_2fa TEXT,
+    approved BOOLEAN DEFAULT 0,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 -- 3. Unified Workforce Matrix (Agents)

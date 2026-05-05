@@ -18,3 +18,5 @@ sha2 = "0.10"
 hex = "0.4"
 mac_address = "1.1"
 libp2p = { version = "0.53", features = ["tcp", "noise", "yamux", "mdns", "gossipsub", "macros", "tokio"] }
+totp-lite = "2.0"
+clap = { version = "4.4", features = ["derive"] }

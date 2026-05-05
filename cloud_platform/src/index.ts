@@ -40,6 +40,12 @@ export default {
         if (path === '/api/heartbeat' && method === 'POST')
             return handleHeartbeat(request, env);
 
+        if (path === '/api/users/sync' && method === 'GET')
+            return handleUserSync(env);
+
+        if (path === '/api/users/approve' && method === 'POST')
+            return handleUserApprove(request, env);
+
         if (path === '/api/p2p/announce' && method === 'POST')
             return handleP2PAnnounce(request, env);
 
@@ -127,21 +133,31 @@ ok "iZCore installed! Run: iZCore --status"
 async function handleNodeRegister(request: Request, env: Env): Promise<Response> {
     try {
         const body: any = await request.json();
-        const { device_id, platform, hostname, version } = body;
+        const { device_id, platform, hostname, version, username } = body;
 
         if (!device_id) return Response.json({ error: 'device_id required' }, { status: 400 });
 
-        // Upsert node into D1
+        // 1. Handle User Registration (Self-claim)
+        if (username) {
+            await env.DB.prepare(`
+                INSERT INTO users (id, name, role, approved)
+                VALUES (?, ?, 'user', 0)
+                ON CONFLICT(id) DO NOTHING
+            `).bind(username, username).run();
+        }
+
+        // 2. Upsert node with owner_id
         await env.DB.prepare(`
-            INSERT INTO nodes (id, name, status, role, cpu_info, last_heartbeat)
-            VALUES (?, ?, 'online', 'node', ?, CURRENT_TIMESTAMP)
+            INSERT INTO nodes (id, name, status, role, cpu_info, owner_id, last_heartbeat)
+            VALUES (?, ?, 'online', 'node', ?, ?, CURRENT_TIMESTAMP)
             ON CONFLICT(id) DO UPDATE SET
                 status = 'online',
+                owner_id = COALESCE(owner_id, ?),
                 last_heartbeat = CURRENT_TIMESTAMP
-        `).bind(device_id, hostname || device_id, platform || 'unknown').run();
+        `).bind(device_id, hostname || device_id, platform || 'unknown', username || null, username || null).run();
 
-        console.log(`[Register] Node joined: ${device_id} (${platform})`);
-        return Response.json({ ok: true, device_id, message: 'Node registered successfully' });
+        console.log(`[Register] Node joined: ${device_id} (Claimed by: ${username || 'anonymous'})`);
+        return Response.json({ ok: true, device_id, message: 'Node registered and ownership claimed.' });
     } catch (e: any) {
         return Response.json({ error: e.message }, { status: 500 });
     }
@@ -240,6 +256,39 @@ async function handleDataApi(env: Env): Promise<Response> {
             feeds: res[5].results,
             core: { version: 'v25.5.0', status: 'Platinum', sync: new Date().toLocaleTimeString('vi-VN') }
         });
+    } catch (e: any) {
+        return Response.json({ error: e.message }, { status: 500 });
+    }
+}
+
+// ────────────────────────────────────────────────────────────
+// /api/users/sync — Get all approved users for local auth
+// ────────────────────────────────────────────────────────────
+async function handleUserSync(env: Env): Promise<Response> {
+    try {
+        const { results } = await env.DB.prepare("SELECT id, name, role, secret_2fa, approved FROM users WHERE approved = 1").all();
+        return Response.json({ users: results });
+    } catch (e: any) {
+        return Response.json({ error: e.message }, { status: 500 });
+    }
+}
+
+// ────────────────────────────────────────────────────────────
+// /api/users/approve — Approve a user and their claimed nodes
+// ────────────────────────────────────────────────────────────
+async function handleUserApprove(request: Request, env: Env): Promise<Response> {
+    try {
+        const body: any = await request.json();
+        const { user_id, role, approved_by } = body;
+
+        if (!user_id || !approved_by) return Response.json({ error: 'user_id and approved_by required' }, { status: 400 });
+
+        await env.DB.prepare(`
+            UPDATE users SET approved = 1, role = ? WHERE id = ?
+        `).bind(role || 'user', user_id).run();
+
+        console.log(`[Auth] User ${user_id} approved by ${approved_by}`);
+        return Response.json({ ok: true, message: `User ${user_id} approved.` });
     } catch (e: any) {
         return Response.json({ error: e.message }, { status: 500 });
     }
