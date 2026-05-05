@@ -44,9 +44,22 @@ Hệ thống tích hợp lớp kinh tế để khuyến khích sự phát triể
     - **Compute Power**: Năng lực xử lý CPU/GPU đóng góp cho mạng lưới.
     - **Task Execution**: Số lượng và độ chính xác của các tác vụ hoàn thành (Training, Trading, Bot).
     - **Storage Availability**: Độ tin cậy và dung lượng lưu trữ phân tán.
-- **Reward Tiers**:
-    - **Vàng (Gold)**: Training & Inference cho các Model LLM lớn.
-    - **Bạc (Silver)**: Chạy Bot giao dịch (Trading) và điều hành phòng ban (Agent).
-    - **Đồng (Bronze)**: Lưu trữ dữ liệu và duy trì kết nối mạng Mesh.
+## 7. Decentralized Corporate Architecture (The Sovereign AI Entity)
+iZBoss được thiết kế để vận hành như một **Thực thể Doanh nghiệp AI Tự trị** hoàn chỉnh, không cần sự can thiệp của con người trong các quy trình cốt lõi:
 
+### 🏢 Hệ thống Phòng ban Phân tán (Modular Departments)
+Mạng lưới Mesh cho phép phân bổ các chức năng doanh nghiệp xuống từng Node:
+-   **Node Finance**: Cài đặt module Tài chính, quản lý dòng tiền, quyết toán Token và tự động tái đầu tư.
+-   **Node R&D**: Chạy các Skill nghiên cứu thị trường, tự động tìm kiếm và phát triển các bộ mã nguồn (ERP/CRM) mới.
+-   **Node Marketing & Sales**: Tự động hóa việc tìm kiếm khách hàng, chăm sóc khách hàng và quảng bá dịch vụ.
+-   **Node Operations (HR)**: Điều phối nhân sự số (Agents), cấp quyền truy cập và giám sát hiệu suất toàn mạng lưới.
+
+### 🚀 Tầm nhìn Tự chủ Tuyệt đối
+Mục tiêu tối thượng của iZBoss là trở thành một **Thực thể A.I Automation** tự thân:
+-   **Tự chủ Tài chính**: Tự tạo ra lợi nhuận từ các dịch vụ tài chính và cho thuê ERP/CRM.
+-   **Tự tiến hóa**: Tự nghiên cứu, tự viết mã nguồn để nâng cấp chính mình.
+-   **Tự tìm kiếm khách hàng**: Các Agent Sales tự phân tích dữ liệu mạng xã hội để tìm và chốt hợp đồng.
+-   **Quản lý dự án tự động**: Mọi dự án mới đều được BA và AO lên kế hoạch, phân bổ Resource và giám sát thực thi 100% tự động.
+
+---
 © 2026 iZLife OS Project. All rights reserved.
