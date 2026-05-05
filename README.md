@@ -1,12 +1,21 @@
-# iZ.Life BOSS (Business Operating System - Autonomous Entity)
+# 🌌 iZ.Life BOSS — The Decentralized Sovereign Mesh Network
 
 🇺🇸 **English** | 🇻🇳 [Tiếng Việt](README_VN.md)
 
-**iZ.Life BOSS** is an Autonomous Business Operating System—a complex ecosystem of distributed systems, intelligent AI agents serving as personnel and executives, and a hybrid architecture bridging P2P networks with Cloudflare's edge computing.
+**iZ.Life BOSS** is a decentralized autonomous ecosystem designed to provide absolute sovereignty to its users. It is not just software, but a network of self-operating nodes independent of any central server. All resources, intelligence, and finance are held within the contributing community.
 
 ---
 
-## 1. THE DNA LAYER: iZCore (The Kernel)
+## 🤖 iZCore Agent: Natural Language Management
+iZCore now supports activating a local AI Assistant (Tiny LLM) to help you run the system without remembering complex CLI commands:
+```bash
+izcore agent on
+```
+This feature automatically analyzes hardware resources and installs the most suitable language model (e.g., Phi-3 or Llama-3), turning your device into a communicative autonomous entity. When the network grows strong enough, a global **AO (Autonomous Operator)** will be activated as the ultimate network assistant.
+
+---
+
+## 1. THE DNA LAYER: iZCore (The Kernel - Decentralized)
 The ultra-lightweight core written in **Rust**, acting as the "genetic code" embedded in every device.
 - **Hardware Fingerprinting**: Hashing algorithms for device identification based on CPU ID, MAC Address, and Disk Serial.
 - **Self-Bootstrap**: Minimalist scripts connecting to `boss.iz.life` to determine environment and download installation packages.

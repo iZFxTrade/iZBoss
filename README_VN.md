@@ -1,12 +1,21 @@
-# iZ.Life BOSS (Hệ điều hành Doanh nghiệp - Thực thể Tự trị)
+# 🌌 iZ.Life BOSS — Mạng Lưới Thực Thể Tự Trị Phi Tập Trung
 
 🇻🇳 **Tiếng Việt** | 🇺🇸 [English](README.md)
 
-Dự án **iZ.Life BOSS** là một hệ điều hành doanh nghiệp thực thể tự trị, bao gồm các hệ thống phân tán, các AI thông minh hoạt động như nhân sự và điều hành, cùng với kiến trúc kết nối P2P và Cloudflare.
+**iZ.Life BOSS** là một hệ sinh thái phi tập trung được thiết kế để mang lại quyền tự trị tuyệt đối cho người dùng. Đây không chỉ là một phần mềm, mà là một mạng lưới các Node tự vận hành, không phụ thuộc vào bất kỳ máy chủ trung tâm nào. Mọi tài nguyên, trí tuệ và tài chính đều nằm trong tay cộng đồng đóng góp.
 
 ---
 
-## 1. TẦNG DNA: iZCore (The Kernel)
+## 🤖 iZCore Agent: Quản Trị Bằng Ngôn Ngữ Tự Nhiên
+iZCore hiện đã hỗ trợ kích hoạt Trợ lý AI cục bộ (Tiny LLM) để giúp bạn điều hành hệ thống mà không cần nhớ các câu lệnh CLI phức tạp:
+```bash
+izcore agent on
+```
+Tính năng này sẽ tự động phân tích phần cứng và cài đặt mô hình ngôn ngữ (như Phi-3 hoặc Llama-3) để biến thiết bị của bạn thành một thực thể có khả năng giao tiếp và tự vận hành. Khi mạng lưới đủ mạnh, một **AO (Autonomous Operator)** toàn cầu sẽ được kích hoạt để làm trợ lý cho toàn bộ mạng lưới.
+
+---
+
+## 1. TẦNG DNA: iZCore (The Kernel - Phi tập trung)
 Lõi mã nguồn siêu nhẹ viết bằng **Rust**, đóng vai trò là "mã gen" nằm trong mọi thiết bị.
 - **Hardware Fingerprinting**: Thuật toán băm (Hashing) định danh thiết bị dựa trên CPU ID, MAC Address, Disk Serial.
 - **Self-Bootstrap**: Script tối giản kết nối về `boss.iz.life` để xác định môi trường và tải bộ cài.

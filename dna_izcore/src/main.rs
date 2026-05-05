@@ -5,6 +5,7 @@ mod ota;
 mod p2p;
 mod dashboard;
 mod users;
+mod agent;
 
 use clap::{Parser, Subcommand};
 use std::time::Duration;
@@ -40,8 +41,19 @@ enum Commands {
         #[command(subcommand)]
         action: UserCommands,
     },
+    /// Manage AI Agents & LLM
+    Agent {
+        #[command(subcommand)]
+        action: AgentCommands,
+    },
     /// Show node status
     Status,
+}
+
+#[derive(Subcommand)]
+enum AgentCommands {
+    /// Turn on the local AI Agent assistant
+    On,
 }
 
 #[derive(Subcommand)]
@@ -69,6 +81,12 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             }
             Commands::User { action } => {
                 handle_user_command(action).await?;
+                return Ok(());
+            }
+            Commands::Agent { action } => {
+                match action {
+                    AgentCommands::On => agent::handle_agent_activation().await,
+                }
                 return Ok(());
             }
             Commands::Status => {
