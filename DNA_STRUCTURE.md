@@ -49,10 +49,10 @@ iZBoss được thiết kế để vận hành như một **Thực thể Doanh n
 
 ### 🏢 Hệ thống Phòng ban Phân tán (Modular Departments)
 Mạng lưới Mesh cho phép phân bổ các chức năng doanh nghiệp xuống từng Node:
--   **Node Finance**: Cài đặt module Tài chính, quản lý dòng tiền, quyết toán Token và tự động tái đầu tư.
+-   **Node Finance**: Cài đặt module Tài chính, quản lý dòng tiền, tự động tái đầu tư. Thực hiện quyết toán chi phí thuê Agent, Token cho LLM và trả thưởng Token cho người dùng đóng góp Node vào hệ thống (Contributor Rewards).
 -   **Node R&D**: Liên tục quét và tìm kiếm công nghệ mới để nâng cấp hệ thống. Chạy các Skill nghiên cứu thị trường, xây dựng mô hình phân tích, hệ thống trading và quản lý tài chính theo yêu cầu từ BA (Business Analyst) và các phòng ban. Việc phát triển các bộ mã nguồn như ERP/CRM chỉ được thực hiện khi có yêu cầu cụ thể từ tầng quản trị.
 -   **Node Marketing & Sales**: Tự động hóa việc tìm kiếm khách hàng, chăm sóc khách hàng và quảng bá dịch vụ.
--   **Node Operations (HR)**: Điều phối nhân sự số (Agents), cấp quyền truy cập và giám sát hiệu suất toàn mạng lưới.
+-   **Node Operations (HR)**: Điều phối nhân sự số (Agents), cấp quyền truy cập và giám sát hiệu suất. Tự động "tuyển dụng" thêm Node mới từ cộng đồng hoặc tự chủ thuê thêm Node (Cloud/VPS) để mở rộng tài nguyên dựa trên yêu cầu thực tế của các dự án phát triển.
 
 ### 🚀 Tầm nhìn Tự chủ Tuyệt đối
 Mục tiêu tối thượng của iZBoss là trở thành một **Thực thể A.I Automation** tự thân:

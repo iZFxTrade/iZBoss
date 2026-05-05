@@ -16,9 +16,9 @@ We aim to build the world's largest distributed supercomputer, turning fragmente
 
 ## 🏢 Sovereign AI Financial Automation Entity
 iZ.Life BOSS goes beyond infrastructure; we are building an **Autonomous Digital Financial Corporation**:
--   **Financial Autonomy (Highest Priority)**: Conducting automated market analysis, executing Auto-trade, and managing funds for itself and external investors to generate sustainable cash flow.
--   **ERP/CRM & Financial Services**: iZBoss provides decentralized financial management solutions and ERP/CRM systems for external partners.
--   **Sovereign Growth**: The system conducts its own research, marketing, and scaling, funded by profits from the global financial markets.
+-   **Financial Autonomy (Highest Priority)**: Automated market analysis, trading, fund management, and **automated payroll/settlement** for LLM costs, agent leasing, and contributor rewards.
+-   **Autonomous Operations & Scaling**: The Operations (HR) department autonomously "recruits" new nodes from the community or leases VPS/Cloud resources to expand capacity based on project demand.
+-   **ERP/CRM & Financial Services**: Providing decentralized management solutions for external partners to maximize revenue.
 
 ## 💰 Token Economy (Proof of Contribution)
 Every user joining iZBoss is assigned a **Unique Wallet Address**. The system automatically rewards tokens based on the computational power and actual value contributed by the node:
