@@ -1,7 +1,5 @@
 # iZ.Life BOSS (Business Operating System - Autonomous Entity)
 
-[Tiếng Việt bên dưới]
-
 **iZ.Life BOSS** is an Autonomous Business Operating System—a complex ecosystem of distributed systems, intelligent AI agents serving as personnel and executives, and a hybrid architecture bridging P2P networks with Cloudflare's edge computing.
 
 ---
@@ -24,19 +22,19 @@ The ultra-lightweight core written in **Rust**, acting as the "genetic code" emb
 - **OTA Warehouse**: Secure storage for executable binaries and installers on Cloudflare R2.
 - **Task Queue (D1/KV)**: Distributed task scheduling for the entire mesh.
 
-## 3. LAYER 2: Supreme Assistant System (The Executives)
+## 4. LAYER 2: Supreme Assistant System (The Executives)
 A coordination of two specialized AIs:
 1. **BOSS Assistant (BA)**: The **Strategic Brain**. Listens to visions, sets OKRs, and provides supreme oversight. Manages all high-level input from the Master.
 2. **Administrative Officer (AO)**: The **Operating Director**. Allocates resources, manages Departmental Agents (HR), directly controls OTA deployments, and reports execution status back to the BA.
 
-## 4. COMMUNICATION PROTOCOL (BA ↔ AO)
+## 5. COMMUNICATION PROTOCOL (BA ↔ AO)
 Utilizing **IACS (Inter-Assistant Communication Schema)**:
 - `GOAL_ASSIGN` (BA -> AO): Objectives, budgets, and deadlines.
 - `RESOURCE_QUERY` (BA -> AO): Inquiry regarding network and resource status.
 - `STATUS_REPORT` (AO -> BA): Progress reports and risk assessment from departments.
 - `ACTION_CONFIRM` (AO -> BA): Confirmation of initialized activities.
 
-## 5. AUTONOMOUS DEPARTMENTS (Under AO)
+## 6. AUTONOMOUS DEPARTMENTS (Under AO)
 - **Finance**: Wallet management and profit accounting.
 - **Evolution (R&D)**: Automated resource scanning (HF, GitHub) and self-upgrading models.
 - **iZFx (Trading)**: Proprietary trading, fund management, and EA optimization.
@@ -44,7 +42,7 @@ Utilizing **IACS (Inter-Assistant Communication Schema)**:
 - **Sales & CS**: Customer care and engagement via `izthuchi` funnels.
 - **Agent Manager (HR)**: The AO's arm for digital workforce management.
 
-## 6. ROADMAP
+## 7. ROADMAP
 - **Phase 1: Q1 - The Launchpad**: Cloudflare Dashboard, Rust OTA.
 - **Phase 2: Q2 - The Mesh**: CLI ED25519, P2P network.
 - **Phase 3: Q3 - The Sovereignty**: Self-Hosting Dashboard, financial autonomy.
@@ -52,57 +50,7 @@ Utilizing **IACS (Inter-Assistant Communication Schema)**:
 
 ---
 
-# [TIẾNG VIỆT]
-
-Dự án **iZ.Life BOSS** là một hệ điều hành doanh nghiệp thực thể tự trị, bao gồm các hệ thống phân tán, các AI thông minh hoạt động như nhân sự và điều hành, cùng với kiến trúc kết nối P2P và Cloudflare.
-
-## 1. TẦNG DNA: iZcore (The Kernel)
-Lõi mã nguồn siêu nhẹ viết bằng **Rust**, đóng vai trò là "mã gen" nằm trong mọi thiết bị.
-- **Hardware Fingerprinting**: Thuật toán băm (Hashing) định danh thiết bị dựa trên CPU ID, MAC Address, Disk Serial.
-- **Self-Bootstrap**: Script tối giản kết nối về `boss.iz.life` để xác định môi trường và tải bộ cài.
-- **P2P Handshake**: Thư viện `libp2p` tự tìm đồng đội qua mDNS / Gossip Protocol.
-- **Auth Gate**: Xác thực chữ ký số (ED25519) - Chỉ admin mới có quyền đánh thức thực thể.
-- **OTA Listener**: Tiến trình ngầm nhận bản cập nhật nóng qua Cloudflare R2 / Node lân cận.
-
-## 2. LỚP 1: Command Center (Cloudflare Workers)
-- **Dashboard (boss.iz.life)**: Giao diện quản lý tập trung.
-- **Node Manager**: Quản lý thiết bị tham gia mạng, sức khỏe, tài nguyên.
-- **Agent & Process Monitor**: Giám sát tiến trình Agent, log thực thi, trạng thái Heartbeat.
-- **Skill & Module Registry**: Kho lưu trữ các logic/skills có thể điều phối xuống Node.
-- **LLM & API Gateway**: Quản lý API Key (OpenAI, Gemini...), cấu hình hạn mức.
-- **Webhook & Data Feed Manager**: Nguồn cung cấp dữ liệu (Giá cả, News, Social webhook).
-- **OTA Warehouse**: Kho chứa file thực thi, cài đặt trên Cloudflare R2.
-- **Task Queue (D1/KV)**: Hàng đợi công việc cho toàn mạng lưới.
-
-## 3. LỚP 2: Hệ thống Trợ lý Tối cao (The Executives)
-Phối hợp 2 AI chuyên biệt:
-1. **Trợ lý BOSS (BA - Boss Assistant)**: Bộ não chiến lược (Strategic Brain), lắng nghe ý tưởng, thiết lập OKRs, giám sát tối cao.
-2. **Trợ lý Điều hành (AO - Administrative Officer)**: Giám đốc vận hành (Operating Director), phân bổ resource, quản trị Agent phòng ban (HR), trực tiếp điểu hành OTA và báo cáo thực thi trở lại cho BA.
-
-## 4. CƠ CHẾ GIAO TIẾP (BA ↔ AO PROTOCOL)
-Sử dụng **IACS (Inter-Assistant Communication Schema)**:
-- `GOAL_ASSIGN` (BA -> AO): Giao mục tiêu, ngân sách, thời hạn.
-- `RESOURCE_QUERY` (BA -> AO): Hỏi về mạng lưới, tài nguyên.
-- `STATUS_REPORT` (AO -> BA): Báo cáo tiến độ và rủi ro từ phòng ban.
-- `ACTION_CONFIRM` (AO -> BA): Xác nhận hoạt động đã được khởi tạo.
-
-## 5. CÁC PHÒNG BAN TỰ TRỊ (UNDER AO)
-- **Finance**: Quản lý ví, hạch toán lợi nhuận.
-- **Evolution (R&D)**: Quét tài nguyên free (HF, GitHub), tự nâng cấp mô hình.
-- **iZFx (Trading)**: Cày quỹ, quản lý quỹ khách, tối ưu EA.
-- **Marketing**: Tự động hóa nội dung truyền thông.
-- **Sales & CSKH**: Chăm sóc khách hàng, phễu `izthuchi`.
-- **Agent Manager (HR)**: Cánh tay của AO quản lý "nhân sự số".
-
-## 6. ROADMAP PHÁT TRIỂN
-- **Giai đoạn 1: Q1 - The Launchpad**: Cloudflare Dashboard, Rust OTA.
-- **Giai đoạn 2: Q2 - The Mesh**: CLI ED25519, P2P network.
-- **Giai đoạn 3: Q3 - The Sovereignty**: Self-Hosting Dashboard, tự quản tài chính dự án.
-- **Giai đoạn 4: Singularity**: Self-Coding, Startup Machine.
-
----
-
-## 7. PROJECT STRUCTURE / CẤU TRÚC THƯ MỤC
+## 8. PROJECT STRUCTURE
 ```text
 /
 ├── /dna_izcore (Rust)             # Identity, P2P, OTA Kernel
