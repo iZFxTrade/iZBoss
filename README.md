@@ -73,10 +73,16 @@ Utilizing **IACS (Inter-Assistant Communication Schema)**:
 ## 8. QUICK START
 
 ### ⚡ iZcore Quick Install (Every Device)
-Use a single command to auto-detect your device, download the binary from **GitHub Releases**, and register into the matrix:
+You can choose between two installation sources (both auto-detect device and download binaries):
 
+**Option 1: Via System Domain (Recommended)**
 ```bash
 curl -fsSL https://boss.iz.life/install | sh
+```
+
+**Option 2: Direct from GitHub (Fallback/Absolute Trust)**
+```bash
+curl -fsSL https://raw.githubusercontent.com/iZFxTrade/izboss/main/dna_izcore/install.sh | sh
 ```
 
 > **Note**: The current installer prioritizes fetching directly from the GitHub project. The `boss.iz.life` system is being developed into a decentralized storage network (similar to BitTorrent), ensuring iZcore distribution remains independent of any fixed domain in the future.

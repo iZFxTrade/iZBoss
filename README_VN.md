@@ -73,10 +73,16 @@ Sử dụng **IACS (Inter-Assistant Communication Schema)**:
 ## 8. TRIỂN KHAI NHANH
 
 ### ⚡ Cài đặt iZcore (Mọi thiết bị)
-Sử dụng một câu lệnh duy nhất để tự động nhận diện thiết bị, tải binary từ **GitHub Releases**, và đăng ký vào hệ thống:
+Bạn có thể chọn một trong hai nguồn cài đặt sau (cả hai đều tự động nhận diện thiết bị và tải binary):
 
+**Cách 1: Qua tên miền hệ thống (Khuyên dùng)**
 ```bash
 curl -fsSL https://boss.iz.life/install | sh
+```
+
+**Cách 2: Trực tiếp từ GitHub (Dự phòng/Tin cậy tuyệt đối)**
+```bash
+curl -fsSL https://raw.githubusercontent.com/iZFxTrade/izboss/main/dna_izcore/install.sh | sh
 ```
 
 > **Lưu ý**: Nguồn cài đặt hiện tại ưu tiên lấy trực tiếp từ GitHub dự án. Hệ thống `boss.iz.life` đang được hoàn thiện để trở thành một mạng lưới lưu trữ phi tập trung (tương tự BitTorrent), giúp việc phân phối iZcore không phụ thuộc vào bất kỳ tên miền cố định nào trong tương lai.
