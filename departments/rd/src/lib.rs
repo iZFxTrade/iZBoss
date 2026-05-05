@@ -47,7 +47,7 @@ impl RdAgent {
 
     /// Generate weekly R&D report for BA
     pub fn generate_report(&self) -> RdReport {
-        let top = self.top_candidates(1).into_iter().cloned().next().cloned();
+        let top = self.top_candidates(1).into_iter().next().cloned();
         let recommendation = if let Some(ref model) = top {
             format!(
                 "Đề xuất thử nghiệm '{}' từ {} — size: {}GB, relevance: {}/100",

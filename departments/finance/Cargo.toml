@@ -1,6 +1,11 @@
 [package]
 name = "finance"
-version = "0.1.0"
-edition = "2024"
+description = "iZ.Life BOSS - Finance Department"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
 
 [dependencies]
+serde.workspace = true
+serde_json.workspace = true
+anyhow.workspace = true
