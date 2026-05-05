@@ -1,0 +1,33 @@
+# cross.toml — Configuration for cross-compilation via `cross` tool
+# Docs: https://github.com/cross-rs/cross
+
+[build.env]
+passthrough = [
+    "BOSS_API_URL",
+    "BOSS_MASTER_KEY",
+    "RUST_LOG",
+]
+
+# Android ARM64 — use official cross image with NDK
+[target.aarch64-linux-android]
+image = "ghcr.io/cross-rs/aarch64-linux-android:edge"
+
+# Android ARMv7
+[target.armv7-linux-androideabi]
+image = "ghcr.io/cross-rs/armv7-linux-androideabi:edge"
+
+# Linux ARM64 musl (static binary for embedded/RPi)
+[target.aarch64-unknown-linux-musl]
+image = "ghcr.io/cross-rs/aarch64-unknown-linux-musl:edge"
+
+# Linux ARMv7 musl (FPT Play Box, RPi 2/3)
+[target.armv7-unknown-linux-musleabihf]
+image = "ghcr.io/cross-rs/armv7-unknown-linux-musleabihf:edge"
+
+# Linux x86_64 musl (fully static, works on any Linux)
+[target.x86_64-unknown-linux-musl]
+image = "ghcr.io/cross-rs/x86_64-unknown-linux-musl:edge"
+
+# Windows x86_64 via MinGW
+[target.x86_64-pc-windows-gnu]
+image = "ghcr.io/cross-rs/x86_64-pc-windows-gnu:edge"
