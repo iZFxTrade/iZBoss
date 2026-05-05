@@ -3,6 +3,7 @@ mod bootstrap;
 mod fingerprint;
 mod ota;
 mod p2p;
+mod dashboard;
 mod users;
 
 use clap::{Parser, Subcommand};
@@ -170,22 +171,15 @@ async fn handle_interactive_onboarding(device_id: &str) -> Result<(), Box<dyn st
     Ok(())
 }
 
-async fn display_ecosystem_dashboard(user: &User, device_id: &str) -> Result<(), Box<dyn std::error::Error>> {
-    println!("\n------------------------------------------------------------");
-    println!("Welcome, {} | Role: {:?} (Verified)", user.name, user.role);
-    println!("------------------------------------------------------------");
-    println!("[NODE STATUS]");
-    println!("Current Device: {} | ID: {}", std::env::consts::OS, device_id);
-    println!("Connected to iZBoss Mesh: ✓ Active");
+async fn display_ecosystem_dashboard(user: &User, _device_id: &str) -> Result<(), Box<dyn std::error::Error>> {
+    println!("[iZCore] ✓ Access Granted. Awakening TPU Dashboard...");
+    tokio::time::sleep(Duration::from_millis(800)).await;
     
-    // In a real implementation, this would fetch from the P2P network or Command Center
-    println!("\n[RESOURCE INVENTORY]");
-    println!("1. Node: {} (This Device)", fingerprint::generate_device_id().get(0..12).unwrap_or("Local"));
-    println!("   Status: Active | CPU: 8% | RAM: Stable");
+    // Launch TUI Dashboard
+    if let Err(e) = dashboard::run_dashboard(user).await {
+        println!("[iZCore] ✗ Dashboard Error: {}", e);
+    }
     
-    println!("------------------------------------------------------------");
-    println!("Available Actions: [list-nodes] [install-skill] [sys-log] [exit]");
-    println!("------------------------------------------------------------\n");
     Ok(())
 }
 
