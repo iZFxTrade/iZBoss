@@ -3,7 +3,12 @@
 
 🇻🇳 **Tiếng Việt** | 🇺🇸 [English](README.md)
 
-**iZ.Life B.O.S.S.** (Business Operating System Services) không chỉ là một phần mềm, mà là một cuộc cách mạng về **Hạ tầng Vật lý Phi tập trung (DePIN)**. Chúng tôi đang xây dựng một mạng lưới Mesh toàn cầu, nơi mọi thiết bị phần cứng nhàn rỗi — từ chiếc điện thoại cũ, PlayBox, đến những dàn Server khủng — đều có thể hóa thân thành một **Node Trí tuệ** để cùng vận hành, cùng kiếm tiền và cùng chia sẻ lợi nhuận.
+**iZ.Life B.O.S.S.** (Business Operating System Services) không chỉ là một phần mềm, mà là một cuộc cách mạng về **Hạ tầng Vật lý Phi tập trung (DePIN)**. 
+
+> **Triết lý cốt lõi: iZ.BOSS = "iZ" (Easy) to be the "BOSS" (Ông Chủ).**
+> Chúng tôi tin rằng bất kỳ ai cũng có quyền và có thể trở thành một chủ doanh nghiệp tự trị với sự hỗ trợ của trí tuệ nhân tạo.
+
+Chúng tôi đang xây dựng một mạng lưới Mesh toàn cầu, nơi mọi thiết bị phần cứng nhàn rỗi — từ chiếc điện thoại cũ, PlayBox, đến những dàn Server khủng — đều có thể hóa thân thành một **Node Trí tuệ** để cùng vận hành, cùng kiếm tiền và cùng chia sẻ lợi nhuận.
 
 ---
 
