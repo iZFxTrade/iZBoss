@@ -1,8 +1,25 @@
-# 🌌 iZ.Life BOSS — Mạng Lưới Thực Thể Tự Trị Phi Tập Trung
+# 🌌 iZ.Life BOSS — Mạng Lưới Hạ Tầng Trí Tuệ Nhân Tạo Phi Tập Trung (DePIN)
+### Định Nghĩa Lại Quyền Sở Hữu Hạ Tầng & Trí Tuệ | Tầm Nhìn Tỷ Đô
 
 🇻🇳 **Tiếng Việt** | 🇺🇸 [English](README.md)
 
-**iZ.Life BOSS** là một hệ sinh thái phi tập trung được thiết kế để mang lại quyền tự trị tuyệt đối cho người dùng. Đây không chỉ là một phần mềm, mà là một mạng lưới các Node tự vận hành, không phụ thuộc vào bất kỳ máy chủ trung tâm nào. Mọi tài nguyên, trí tuệ và tài chính đều nằm trong tay cộng đồng đóng góp.
+**iZ.Life BOSS** không chỉ là một phần mềm, mà là một cuộc cách mạng về **Hạ tầng Vật lý Phi tập trung (DePIN)**. Chúng tôi đang xây dựng một mạng lưới Mesh toàn cầu, nơi mọi thiết bị phần cứng nhàn rỗi — từ chiếc điện thoại cũ, PlayBox, đến những dàn Server khủng — đều có thể hóa thân thành một **Node Trí tuệ** để cùng vận hành, cùng kiếm tiền và cùng chia sẻ lợi nhuận.
+
+---
+
+## 🚀 Tầm Nhìn: Hệ Sinh Thái Trí Tuệ Vô Hạn
+Chúng tôi hướng tới việc xây dựng một siêu máy tính phân tán lớn nhất thế giới, biến mọi tài nguyên phần cứng rời rạc thành một thực thể thống nhất có khả năng:
+-   **AI Training & Inference**: Huấn luyện và vận hành các mô hình LLM khổng lồ một cách phi tập trung.
+-   **Autonomous Trading Bot**: Vận hành các thuật toán giao dịch tài chính tự trị 24/7.
+-   **Distributed Storage**: Lưu trữ dữ liệu bảo mật, bất tử trên mạng lưới Mesh.
+-   **Task Execution Marketplace**: Thị trường thực thi các tác vụ kỹ thuật số phức tạp.
+
+## 💰 Mô Hình Kinh Tế Token (Proof of Contribution)
+Mỗi User tham gia iZBoss sẽ được cấp một **Địa chỉ Ví duy nhất**. Hệ thống sẽ tự động trả thưởng Token dựa trên năng lực tính toán và giá trị thực tế mà Node đó đóng góp:
+-   **Compute Rewards**: Trả thưởng cho việc cho mượn CPU/GPU để chạy Model AI.
+-   **Trading Rewards**: Chia sẻ lợi nhuận khi Node tham gia vận hành các Bot tài chính thành công.
+-   **Storage Rewards**: Thu nhập thụ động từ việc lưu trữ dữ liệu cho mạng lưới.
+-   **Skill Rewards**: Thưởng cho việc phát triển và đóng góp các Kỹ năng (Skills) mới vào DNA.
 
 ---
 

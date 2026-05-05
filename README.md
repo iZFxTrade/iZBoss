@@ -1,8 +1,25 @@
-# 🌌 iZ.Life BOSS — The Decentralized Sovereign Mesh Network
+# 🌌 iZ.Life BOSS — Decentralized AI Infrastructure Network (DePIN)
+### Redefining Infrastructure & Intelligence Ownership | The Billion-Dollar Vision
 
 🇺🇸 **English** | 🇻🇳 [Tiếng Việt](README_VN.md)
 
-**iZ.Life BOSS** is a decentralized autonomous ecosystem designed to provide absolute sovereignty to its users. It is not just software, but a network of self-operating nodes independent of any central server. All resources, intelligence, and finance are held within the contributing community.
+**iZ.Life BOSS** is not just software; it is a revolution in **Decentralized Physical Infrastructure Networks (DePIN)**. We are building a global Mesh network where every idle hardware device — from an old smartphone or PlayBox to a high-end server farm — can transform into an **Intelligence Node** to co-operate, co-earn, and co-profit.
+
+---
+
+## 🚀 Vision: The Infinite Intelligence Ecosystem
+We aim to build the world's largest distributed supercomputer, turning fragmented hardware resources into a unified entity capable of:
+-   **AI Training & Inference**: Training and running massive LLMs in a decentralized manner.
+-   **Autonomous Trading Bots**: Operating financial algorithms 24/7 without human intervention.
+-   **Distributed Storage**: Secure, immortal data storage across the Mesh network.
+-   **Task Execution Marketplace**: A marketplace for executing complex digital tasks.
+
+## 💰 Token Economy (Proof of Contribution)
+Every user joining iZBoss is assigned a **Unique Wallet Address**. The system automatically rewards tokens based on the computational power and actual value contributed by the node:
+-   **Compute Rewards**: Earn for lending CPU/GPU power for AI models.
+-   **Trading Rewards**: Share profits when your node helps operate successful financial bots.
+-   **Storage Rewards**: Passive income from hosting data for the network.
+-   **Skill Rewards**: Rewards for developing and contributing new Skills to the DNA.
 
 ---
 
