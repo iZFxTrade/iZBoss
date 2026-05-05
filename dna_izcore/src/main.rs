@@ -6,6 +6,7 @@ mod p2p;
 mod dashboard;
 mod users;
 mod agent;
+mod evolution;
 
 use clap::{Parser, Subcommand};
 use std::time::Duration;
@@ -46,6 +47,8 @@ enum Commands {
         #[command(subcommand)]
         action: AgentCommands,
     },
+    /// Trigger system self-evolution cycle
+    Evolve,
     /// Show node status
     Status,
 }
@@ -87,6 +90,10 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                 match action {
                     AgentCommands::On => agent::handle_agent_activation().await,
                 }
+                return Ok(());
+            }
+            Commands::Evolve => {
+                evolution::handle_evolution_cycle().await;
                 return Ok(());
             }
             Commands::Status => {

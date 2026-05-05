@@ -204,9 +204,15 @@ fn draw_users_tab(f: &mut ratatui::Frame, area: Rect) {
 }
 
 fn draw_system_tab(f: &mut ratatui::Frame, area: Rect) {
+    let evolution = crate::evolution::get_current_state();
     let chunks = Layout::default()
         .direction(Direction::Vertical)
-        .constraints([Constraint::Length(3), Constraint::Length(3), Constraint::Min(0)])
+        .constraints([
+            Constraint::Length(3), // CPU
+            Constraint::Length(3), // RAM
+            Constraint::Length(6), // Evolution
+            Constraint::Min(0)     // Info
+        ])
         .split(area);
 
     let cpu = Gauge::default()
@@ -221,7 +227,20 @@ fn draw_system_tab(f: &mut ratatui::Frame, area: Rect) {
         .percent(45);
     f.render_widget(ram, chunks[1]);
     
+    let evo_info = Paragraph::new(format!(
+        "🧬 Generation: Gen-{}\n\
+         🧠 Collective Intelligence: {:.0}%\n\
+         ⭐ Fitness Score: {:.2}\n\
+         ⚡ Last Mutation: {}",
+        evolution.generation,
+        evolution.collective_intelligence_level * 100.0,
+        evolution.fitness_score,
+        evolution.last_mutation
+    ))
+    .block(Block::default().borders(Borders::ALL).title(" Autonomous Evolution State ").style(Style::default().fg(Color::Yellow)));
+    f.render_widget(evo_info, chunks[2]);
+
     let info = Paragraph::new("OS: Linux 6.1.0-21-amd64\nKernel: iZCore v0.1.2\nUptime: 4d 12h 30m\nNode ID: iznode-primary")
         .block(Block::default().borders(Borders::ALL).title(" System Diagnostics "));
-    f.render_widget(info, chunks[2]);
+    f.render_widget(info, chunks[3]);
 }
