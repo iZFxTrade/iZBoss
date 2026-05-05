@@ -15,10 +15,10 @@ Chúng tôi hướng tới việc xây dựng một siêu máy tính phân tán 
 -   **Task Execution Marketplace**: Thị trường thực thi các tác vụ kỹ thuật số phức tạp.
 
 ## 🏢 Thực Thể Doanh Nghiệp AI Tự Trị (Sovereign AI Entity)
-iZ.Life BOSS không dừng lại ở hạ tầng, chúng tôi xây dựng một **Doanh nghiệp Số Tự trị**:
--   **Tự chủ Vận hành**: Các phòng ban (Finance, Sales, Marketing, R&D) được phân bổ trên các Node và hoạt động 100% tự động.
--   **Dịch vụ ERP/CRM Phi tập trung**: iZBoss tự phát triển và cung cấp các giải pháp quản trị cho các doanh nghiệp bên ngoài thuê lại.
--   **Tự chủ Tăng trưởng**: Hệ thống tự nghiên cứu thị trường, tự tìm kiếm khách hàng và tự quản lý các dự án nội bộ để mở rộng quy mô mà không cần con người điều hành.
+iZ.Life BOSS không dừng lại ở hạ tầng, chúng tôi xây dựng một **Doanh nghiệp Tài chính Số Tự trị**:
+-   **Tự chủ Tài chính (Cấp độ Cao nhất)**: Tự phân tích thị trường, vận hành Auto-trade và quản lý quỹ (Fund Management) cho chính mình và nhà đầu tư để tạo ra dòng tiền bền vững.
+-   **Dịch vụ ERP/CRM & Tài chính**: iZBoss cung cấp các giải pháp quản trị tài chính doanh nghiệp và hệ thống ERP/CRM phi tập trung cho các đối tác bên ngoài.
+-   **Tự chủ Tăng trưởng**: Hệ thống tự nghiên cứu, tự marketing và tự mở rộng quy mô thông qua lợi nhuận từ thị trường tài chính toàn cầu.
 
 ## 💰 Mô Hình Kinh Tế Token (Proof of Contribution)
 Mỗi User tham gia iZBoss sẽ được cấp một **Địa chỉ Ví duy nhất**. Hệ thống sẽ tự động trả thưởng Token dựa trên năng lực tính toán và giá trị thực tế mà Node đó đóng góp:

@@ -56,7 +56,7 @@ Mạng lưới Mesh cho phép phân bổ các chức năng doanh nghiệp xuốn
 
 ### 🚀 Tầm nhìn Tự chủ Tuyệt đối
 Mục tiêu tối thượng của iZBoss là trở thành một **Thực thể A.I Automation** tự thân:
--   **Tự chủ Tài chính**: Tự tạo ra lợi nhuận từ các dịch vụ tài chính và cho thuê ERP/CRM.
+-   **Tự chủ Tài chính (Financial Autonomy)**: Tự tạo ra lợi nhuận thông qua việc tự phân tích thị trường, thực thi Auto-trade, quản lý quỹ tự thân và quản lý quỹ cho nhà đầu tư. Ưu tiên cao nhất luôn dành cho các dịch vụ và thị trường tài chính, bên cạnh việc cho thuê hạ tầng ERP/CRM.
 -   **Tự tiến hóa**: Tự nghiên cứu, tự viết mã nguồn để nâng cấp chính mình.
 -   **Tự tìm kiếm khách hàng**: Các Agent Sales tự phân tích dữ liệu mạng xã hội để tìm và chốt hợp đồng.
 -   **Quản lý dự án tự động**: Mọi dự án mới đều được BA và AO lên kế hoạch, phân bổ Resource và giám sát thực thi 100% tự động.
