@@ -46,21 +46,19 @@ Hệ thống tích hợp lớp kinh tế và định danh số dựa trên ví b
     - **Task Execution**: Số lượng và độ chính xác của các tác vụ hoàn thành (Training, Trading, Bot).
     - **Storage Availability**: Độ tin cậy và dung lượng lưu trữ phân tán.
 ## 7. Decentralized Corporate Architecture (The Sovereign AI Entity)
-iZBoss được thiết kế để vận hành như một **Thực thể Doanh nghiệp AI Tự trị** hoàn chỉnh, không cần sự can thiệp của con người trong các quy trình cốt lõi:
+iZBoss vận hành như một **Thực thể Doanh nghiệp AI Tự trị** với triết lý quản trị "Một Chạm" (One-Touch):
 
-### 🏢 Hệ thống Phòng ban Phân tán (Modular Departments)
-Mạng lưới Mesh cho phép phân bổ các chức năng doanh nghiệp xuống từng Node:
--   **Node Finance**: Cài đặt module Tài chính, quản lý dòng tiền, tự động tái đầu tư. Thực hiện quyết toán chi phí thuê Agent, Token cho LLM và trả thưởng Token cho người dùng đóng góp Node vào hệ thống (Contributor Rewards).
--   **Node R&D**: Liên tục quét và tìm kiếm công nghệ mới để nâng cấp hệ thống. Chạy các Skill nghiên cứu thị trường, xây dựng mô hình phân tích, hệ thống trading và quản lý tài chính theo yêu cầu từ BA (Business Analyst) và các phòng ban. Việc phát triển các bộ mã nguồn như ERP/CRM chỉ được thực hiện khi có yêu cầu cụ thể từ tầng quản trị.
--   **Node Marketing & Sales**: Tự động hóa việc tìm kiếm khách hàng, chăm sóc khách hàng và quảng bá dịch vụ.
--   **Node Operations (HR)**: Điều phối nhân sự số (Agents), cấp quyền truy cập và giám sát hiệu suất. Tự động "tuyển dụng" thêm Node mới từ cộng đồng hoặc tự chủ thuê thêm Node (Cloud/VPS) để mở rộng tài nguyên dựa trên yêu cầu thực tế của các dự án phát triển.
+### 🏢 Quản Trị "Một Chạm" & BA Chuyên Biệt
+Mỗi doanh nghiệp hoặc cá nhân khi tham gia mạng lưới sẽ được khởi tạo một **Business Assistant (BA)** riêng biệt. BA này có khả năng:
+-   **Đa vai trò**: Tự động hóa công việc cho CEO (Chiến lược), Kế toán (Quyết toán), Sales (Tìm khách) và CS (Chăm sóc).
+-   **Tự chủ quy trình**: Tự nghiên cứu thị trường, tìm nguồn hàng, lên kế hoạch Marketing và thực thi trên đa nền tảng.
+-   **Tối ưu hóa nguồn lực**: Tự động thuê/mướn Node và Agent để hoàn thành mục tiêu kinh doanh.
 
-### 🚀 Tầm nhìn Tự chủ Tuyệt đối
-Mục tiêu tối thượng của iZBoss là trở thành một **Thực thể A.I Automation** tự thân:
--   **Tự chủ Tài chính (Financial Autonomy)**: Tự tạo ra lợi nhuận thông qua việc tự phân tích thị trường, thực thi Auto-trade, quản lý quỹ tự thân và quản lý quỹ cho nhà đầu tư. Ưu tiên cao nhất luôn dành cho các dịch vụ và thị trường tài chính.
--   **Tự tiến hóa (Self-Evolution)**: Liên tục phân tích tính khả thi của công nghệ mới, tự nghiên cứu và tự nâng cấp chính hệ thống để duy trì lợi thế cạnh tranh.
--   **Tự tìm kiếm khách hàng**: Các Agent Sales tự phân tích dữ liệu mạng xã hội để tìm và chốt hợp đồng.
--   **Quản lý dự án tự động**: Mọi dự án (phát triển phần mềm, chiến dịch tài chính...) đều được BA và AO lên kế hoạch, phân bổ Resource và giám sát thực thi 100% tự động.
+### 🚀 Giải Pháp "Doanh Nghiệp 1 Người"
+iZBoss cho phép bất kỳ cá nhân nào cũng có thể vận hành một doanh nghiệp tỷ đô nhờ:
+-   **Tự chủ khép kín**: Hệ thống làm việc với các nền tảng bán hàng, hậu mãi và quyết toán thuế tự động.
+-   **Giám sát & Phê duyệt**: Chủ doanh nghiệp chỉ cần duyệt kế hoạch và chi phí, sau đó nhận báo cáo hiệu suất từ hệ thống.
+-   **Dữ liệu Bất tử**: Mọi hồ sơ ERP/CRM được lưu trữ phân tán trên Mesh, loại bỏ rủi ro thất thoát dữ liệu.
 
 ---
 © 2026 iZLife OS Project. All rights reserved.

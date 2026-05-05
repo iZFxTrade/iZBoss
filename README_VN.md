@@ -7,18 +7,22 @@
 
 ---
 
-## 🚀 Tầm Nhìn: Hệ Sinh Thái Trí Tuệ Vô Hạn
-Chúng tôi hướng tới việc xây dựng một siêu máy tính phân tán lớn nhất thế giới, biến mọi tài nguyên phần cứng rời rạc thành một thực thể thống nhất có khả năng:
--   **AI Training & Inference**: Huấn luyện và vận hành các mô hình LLM khổng lồ một cách phi tập trung.
--   **Autonomous Trading Bot**: Vận hành các thuật toán giao dịch tài chính tự trị 24/7.
--   **Distributed Storage**: Lưu trữ dữ liệu bảo mật, bất tử trên mạng lưới Mesh.
--   **Task Execution Marketplace**: Thị trường thực thi các tác vụ kỹ thuật số phức tạp.
+## 🚀 Tầm Nhìn Tỷ Đô: Hệ Sinh Thái Trí Tuệ Toàn Diện
+iZ.Life B.O.S.S. được thiết kế để giải phóng tiềm năng con người và tối ưu hóa dòng tiền thông qua hai trụ cột chính:
 
-## 🏢 Thực Thể Doanh Nghiệp AI Tự Trị (Sovereign AI Entity)
-iZ.Life BOSS không dừng lại ở hạ tầng, chúng tôi xây dựng một **Doanh nghiệp Tài chính Số Tự trị**:
--   **Tự chủ Tài chính (Cấp độ Cao nhất)**: Tự giao dịch, quản lý quỹ và **quyết toán tự động** (Payroll) chi phí LLM, thuê Agent và thưởng cho cộng đồng đóng góp Node.
--   **Tự chủ Vận hành & Mở rộng**: Phòng Operations (HR) tự động "tuyển dụng" thêm Node từ cộng đồng hoặc tự thuê thêm VPS/Cloud để mở rộng sức mạnh tính toán khi dự án yêu cầu.
--   **Dịch vụ ERP/CRM & Tài chính**: Cung cấp các giải pháp quản trị doanh nghiệp phi tập trung cho đối tác bên ngoài để gia tăng lợi nhuận.
+### 💎 1. Cá Nhân: Trợ Lý Tài Chính Bất Tử
+-   **iZThuChi (Miễn phí)**: Công cụ hoạch định tài chính cá nhân toàn diện (Quản lý thu chi, quản lý quỹ chung/riêng, phân tích sức khỏe tài chính và dự báo dòng tiền).
+-   **Gói Phân Tích Tín Hiệu**: Hệ thống phân tích tín hiệu giao dịch thời gian thực cho nhiều thị trường.
+-   **Trợ Lý Đầu Tư & Quản Lý Quỹ**: AI cá nhân hỗ trợ phân tích đầu tư, theo dõi danh mục và tối ưu hóa lợi nhuận.
+-   **Chợ Kỹ Năng (Skill Marketplace)**: Nơi các Master có thể cho thuê Bot tự động hoặc bán tín hiệu giao dịch cho cộng đồng.
+
+### 🏢 2. Doanh Nghiệp: Quản Trị "Một Chạm" (One-Touch Management)
+Biến iZ.Life B.O.S.S. thành một thực thể kinh doanh tự vận hành hoàn chỉnh:
+-   **ERP & CRM Phi Tập Trung**: Quản trị tài nguyên và khách hàng trên hạ tầng Mesh, đảm bảo bảo mật tuyệt đối và không bao giờ mất dữ liệu.
+-   **Business Assistant (BA) Chuyên Biệt**: Mỗi doanh nghiệp sở hữu một BA riêng biệt, tự động hóa vai trò cho từng vị trí từ CEO, Kế toán đến Sales và CS.
+-   **Quy Trình Tự Động Khép Kín**: Hệ thống tự động nghiên cứu thị trường, tìm kiếm nguồn hàng, lên kế hoạch kinh doanh/marketing, triển khai, giám sát và tối ưu hóa.
+-   **Chủ Doanh Nghiệp Chỉ Duyệt & Nhận Kết Quả**: CEO chỉ cần phê duyệt kế hoạch và chi phí, mọi khâu vận hành, bán hàng trên các nền tảng, hậu mãi và quyết toán thuế đều do các Agent thực hiện.
+-   **Giải Pháp Cho "Doanh Nghiệp 1 Người"**: Hỗ trợ bất kỳ cá nhân nào trở thành chủ doanh nghiệp với sự trợ lực của đội ngũ nhân sự số tinh nhuệ.
 
 ## 💰 iZWallet: Ví Tự Trị & Định Danh Số (Identity & Finance)
 iZCore hiện đã tích hợp sẵn hệ thống ví không lưu ký (non-custodial) mạnh mẽ:
