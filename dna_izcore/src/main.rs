@@ -7,6 +7,7 @@ mod dashboard;
 mod users;
 mod agent;
 mod evolution;
+mod wallet;
 
 use clap::{Parser, Subcommand};
 use std::time::Duration;
@@ -47,6 +48,11 @@ enum Commands {
         #[command(subcommand)]
         action: AgentCommands,
     },
+    /// Manage iZWallet (Autonomous Finance)
+    Wallet {
+        #[command(subcommand)]
+        action: WalletCommands,
+    },
     /// Trigger system self-evolution cycle
     Evolve,
     /// Show node status
@@ -70,6 +76,18 @@ enum UserCommands {
     },
 }
 
+#[derive(Subcommand)]
+enum WalletCommands {
+    /// Initialize a new native wallet
+    Init,
+    /// View transaction history
+    History,
+    /// Pay to another User ID
+    Pay { to: String, amount: f64, note: Option<String> },
+    /// Send to external address
+    Send { to: String, amount: f64, memo: Option<String> },
+}
+
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let cli = Cli::parse();
@@ -89,6 +107,15 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             Commands::Agent { action } => {
                 match action {
                     AgentCommands::On => agent::handle_agent_activation().await,
+                }
+                return Ok(());
+            }
+            Commands::Wallet { action } => {
+                match action {
+                    WalletCommands::Init => { let _ = wallet::iZWallet::init(); }
+                    WalletCommands::History => wallet::show_history().await,
+                    WalletCommands::Pay { to, amount, note } => println!("P2P Pay: {} to {} | Note: {:?}", amount, to, note),
+                    WalletCommands::Send { to, amount, memo } => println!("External Send: {} to {} | Memo: {:?}", amount, to, memo),
                 }
                 return Ok(());
             }

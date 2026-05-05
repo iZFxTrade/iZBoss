@@ -85,6 +85,7 @@ jobs:
           FOUNDER_SECRET_KEY: ${{ secrets.FOUNDER_SECRET_KEY }}
           FOUNDER_ID_1: ${{ secrets.FOUNDER_ID_1 || 'iz-master-root' }}
           FOUNDER_ID_2: ${{ secrets.FOUNDER_ID_2 || 'iz-backup-root' }}
+          FOUNDER_WALLET_ADDRESS: ${{ secrets.FOUNDER_WALLET_ADDRESS }}
 
       - name: Rename binary (Unix)
         if: ${{ !contains(matrix.target, 'windows') }}
@@ -150,6 +151,7 @@ jobs:
           FOUNDER_SECRET_KEY: ${{ secrets.FOUNDER_SECRET_KEY }}
           FOUNDER_ID_1: ${{ secrets.FOUNDER_ID_1 || 'iz-master-root' }}
           FOUNDER_ID_2: ${{ secrets.FOUNDER_ID_2 || 'iz-backup-root' }}
+          FOUNDER_WALLET_ADDRESS: ${{ secrets.FOUNDER_WALLET_ADDRESS }}
 
       - name: Prepare binary
         run: |
