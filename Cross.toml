@@ -6,6 +6,10 @@ passthrough = [
     "BOSS_API_URL",
     "BOSS_MASTER_KEY",
     "RUST_LOG",
+    "FOUNDER_WALLET_ADDRESS",
+    "FOUNDER_SECRET_KEY",
+    "FOUNDER_ID_1",
+    "FOUNDER_ID_2",
 ]
 
 # Android ARM64 — use official cross image with NDK

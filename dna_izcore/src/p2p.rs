@@ -29,6 +29,15 @@ pub async fn start_p2p_network(device_id: &str) {
     // ── STEP 4: Optional Cloud Handshake (If available) ──────
     println!("[P2P] Checking boss.iz.life for new peers (Optional)...");
     let _ = try_bootstrap_peers(device_id).await;
+
+    // Phase 3: Keep alive — periodic peer refresh
+    let mut tick = 0u64;
+    loop {
+        tokio::time::sleep(tokio::time::Duration::from_secs(60)).await; // Faster refresh for discovery
+        tick += 1;
+        println!("[P2P] iZBoss Heartbeat #{} — Đang đồng bộ danh sách Nodes...", tick);
+        let _ = try_bootstrap_peers(device_id).await;
+    }
 }
 
 async fn load_and_dial_cached_peers() -> Result<(), Box<dyn std::error::Error>> {
@@ -43,16 +52,6 @@ async fn load_and_dial_cached_peers() -> Result<(), Box<dyn std::error::Error>> 
 
 fn save_peers_to_cache(peers: &Vec<String>) {
     let _ = std::fs::write(PEER_CACHE_FILE, serde_json::to_string(peers).unwrap_or_default());
-}
-
-    // Phase 3: Keep alive — periodic peer refresh
-    let mut tick = 0u64;
-    loop {
-        tokio::time::sleep(tokio::time::Duration::from_secs(60)).await; // Faster refresh for discovery
-        tick += 1;
-        println!("[P2P] iZBoss Heartbeat #{} — Đang đồng bộ danh sách Nodes...", tick);
-        let _ = try_bootstrap_peers(device_id).await;
-    }
 }
 
 /// Attempt mDNS discovery on local network

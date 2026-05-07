@@ -17,7 +17,9 @@ impl iZWallet {
     pub fn init() -> Result<Self, Box<dyn std::error::Error>> {
         println!("\n[iZWallet] 🛡️ Khởi tạo Ví Tự trị iZLife...");
         
-        let mnemonic = Mnemonic::generate_in(Language::English, 24)?;
+        let mut entropy = [0u8; 32];
+        rand::thread_rng().fill_bytes(&mut entropy);
+        let mnemonic = Mnemonic::from_entropy(&entropy)?;
         let phrase = mnemonic.to_string();
         
         println!("\n[QUAN TRỌNG] Đây là 24 từ khóa bí mật của bạn. HÃY LƯU TRỮ CẨN THẬN!");

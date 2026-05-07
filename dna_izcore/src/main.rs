@@ -163,16 +163,13 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     if let Some(user) = auth::authenticate_user(user_id, code) {
         display_ecosystem_dashboard(&user, &device_id).await?;
         
-        // After dashboard, we can start the background services if needed, 
-        // but typically a CLI tool exits or stays in a loop.
-        // For iZCore, we want the background services to keep running.
+        println!("[DNA] Transitioning to background services...");
+        run_background_services(device_id).await?;
     } else {
         println!("[Auth] ✗ Access Denied.");
         return Ok(());
     }
 
-    // Background services start if we are running as a daemon (no interactive)
-    // For now, let's keep the background services in a separate 'daemon' mode or handle it.
     Ok(())
 }
 
@@ -234,7 +231,7 @@ async fn display_ecosystem_dashboard(user: &User, _device_id: &str) -> Result<()
     
     Ok(())
 }
-
+async fn run_background_services(device_id: String) -> Result<(), Box<dyn std::error::Error>> {
     // ── 4. Spawn P2P Network (background) ───────────────────
     let p2p_id = device_id.clone();
     let p2p_handle = tokio::spawn(async move {

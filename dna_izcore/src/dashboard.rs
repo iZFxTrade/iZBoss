@@ -107,7 +107,7 @@ fn ui(f: &mut ratatui::Frame, app: &App) {
         .split(size);
 
     // 1. Header with Tabs
-    let titles = app.tabs.iter().map(|t| Line::from(Span::styled(*t, Style::default().fg(Color::Cyan)))).collect();
+    let titles: Vec<Line> = app.tabs.iter().map(|t| Line::from(Span::styled(*t, Style::default().fg(Color::Cyan)))).collect();
     let tabs = Tabs::new(titles)
         .block(Block::default().borders(Borders::ALL).title(format!(" iZCore Terminal Dashboard | User: {} ", app.user.id)))
         .select(app.index)

@@ -1,4 +1,4 @@
-use sysinfo::{System, SystemExt, CpuExt};
+use sysinfo::System;
 use colored::*;
 
 pub async fn handle_agent_activation() {
