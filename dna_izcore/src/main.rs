@@ -8,6 +8,7 @@ mod users;
 mod agent;
 mod evolution;
 mod wallet;
+mod skills;
 
 use clap::{Parser, Subcommand};
 use std::time::Duration;
